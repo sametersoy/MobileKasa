@@ -1,10 +1,3 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
-
 import React, { useState, useRef } from 'react';
 import type { PropsWithChildren } from 'react';
 import {
@@ -16,45 +9,19 @@ import {
   useColorScheme,
   View,
   Dimensions,
+  FlatList,
 } from 'react-native';
 
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
 import { RNCamera } from 'react-native-camera';
+import { CallMusicStart } from './Components/TrackPlayer';
 import TrackPlayer from 'react-native-track-player';
-
-type SectionProps = PropsWithChildren<{
-  title: string;
-}>;
+import { Colors } from 'react-native/Libraries/NewAppScreen';
+import { Float } from 'react-native/Libraries/Types/CodegenTypes';
 
 
 const width = Dimensions.get('window').width;
 const height = Dimensions.get('window').height;
 TrackPlayer.setupPlayer();
-
-const MusicStart = async () => {
-  // Set up the player
-  
-  await TrackPlayer.reset();
-
-  // Add a track to the queue
-  await TrackPlayer.add({
-      id: 'trackId',
-      url: require('./Barcode-scanner-beep-sound.mp3'),
-      title: 'Track Title',
-      artist: 'Track Artist',
-  });
-
-  // Start playing it
-  await TrackPlayer.play();
-  
-
-};
 
 
 export interface IServis {
@@ -138,44 +105,59 @@ function request<TResponse>(
   // We also can use some post-response
   // data-transformations in the last `then` clause.
 }
+export interface IProduct {
+  id: string;
+  barcode: string;
+  product_name: string;
+  price: string;
+  stock: string;
+
+}
+
+const Products = [
+  {
+
+  },
+
+];
+
+
 
 function App(): JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-  const [type, setType] = useState(RNCamera.Constants.Type.back);
-  const [box, setBox] = useState(null);
-  const cameraref = useRef(null);
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
-  const [barcode, setBarcode] = useState("");
-  const [product_name, setProduct_name] = useState("");
-  const [price, setPrice] = useState("");
-  const [stock, setStock] = useState("");
+  let nettoplam: number = 0.0;
 
-  function ReadedBarcode(okunan: Barcode): string {
-    if (okunan) {
-      if (okunan.data != barcode) {
-        setBarcode(okunan.data);
-        servis(okunan.data);
-        console.log(okunan.data);
-      }
-    }
-    return "";
+  function toplamHesapla(Products: IProduct[]): any {
+    console.log(Products);
+    Products.forEach((element,index)  => {
+      console.log(nettoplam + parseFloat(element.price));
+      //nettoplam=nettoplam + parseFloat(element.price)
+      console.log(element.id)
+      /*if (element.id=='999999'){
+        Products.slice(index)
+      }*/
+      setToplam(toplam + parseFloat(element.price));
+
+    });
+
   }
-
   async function servis(barcode: string): Promise<string> {
     //fetch('http://192.168.1.155:5001/Product/GetProducts?barcode='+barcode, {
 
-    fetch('http://192.168.1.155:5001/Product/GetProducts?barcode='+barcode, {
+    fetch('http://192.168.1.155:5001/Product/GetProducts?barcode=' + barcode, {
       method: "GET",
       headers: { "Content-type": "application/json" }
     }).then((response) => response.json()).then((json) => {
       console.log(json[0])
       console.log(json[0].product_name)
-      MusicStart(); 
+      CallMusicStart();
+      //MusicStart(); 
       setProduct_name(json[0].product_name);
       setPrice(json[0].price)
       setStock(json[0].stock)
+      const value: IProduct[] = Products;
+      value.push({ id: json[0].id, barcode: json[0].barcode, product_name: json[0].product_name, stock: json[0].stock, price: json[0].price });
+      setData(value)
+      toplamHesapla(value);
       return json;
     }).catch((error) => {
       console.log("error");
@@ -188,18 +170,42 @@ function App(): JSX.Element {
     return "";
 
   }
+  const [type, setType] = useState(RNCamera.Constants.Type.back);
+  const cameraref = useRef(null);
 
-  // Make the `request` function generic
-  // to specify the return data type:
+  const [barcode, setBarcode] = useState("");
+  const [toplam, setToplam] = useState(0.0);
+  const [product_name, setProduct_name] = useState("");
+  const [price, setPrice] = useState("");
+  const [stock, setStock] = useState("");
+  const [datas, setData] = useState(Products)
+  function ReadedBarcode(okunan: Barcode): string {
+    if (okunan) {
+      if (okunan.data != barcode) {
+        setBarcode(okunan.data);
+        servis(okunan.data);
+        console.log(okunan.data);
+      }
+    }
+    return "";
+  }
 
+  const Item = ({ data }: { data: IProduct }) => (
+    <View
+      style={{
+        backgroundColor: '#eeeeee',
+        borderRadius: 0,
+        padding: 10,
+        marginVertical: 8,
+        marginHorizontal: 4,
+        width: width,
+      }}>
+      <Text style={{ fontSize: 12 }}>Ürün: {data.product_name} || Stok: {data.stock} ||Fiyat {data.price}</Text>
+    </View>
+  );
 
   return (
-    <SafeAreaView style={backgroundStyle}>
-      <Text>Barcode : {barcode}</Text>
-      <Text>Ürün : {product_name}</Text>
-      <Text>Fiyat: {price}</Text>
-      <Text>Stok Adet: {stock}</Text>
-
+    <SafeAreaView style={styles.container}>
       <RNCamera ref={cameraref}
         style={styles.camera}
         type={type}
@@ -211,6 +217,22 @@ function App(): JSX.Element {
         googleVisionBarcodeMode={RNCamera.Constants.GoogleVisionBarcodeDetection.BarcodeMode.ALTERNATE}
       >
       </RNCamera>
+
+      {datas.length > 1 ?
+        <View style={{ flex: 1 }}>
+          <FlatList
+            data={datas}
+            renderItem={({ item }) => <Item data={item} />}
+            keyExtractor={(item: IProduct) => item.id}
+          />
+        </View>
+        : <Text>not</Text>}
+        <View style={styles.bottom}>
+        <Text style={{ fontSize: 30, color: 'white' }}>Toplam : {toplam}</Text>
+        {/*<Text>Ürün : {product_name}</Text>
+        <Text>Fiyat: {price}</Text>
+      <Text>Stok Adet: {stock}</Text>*/}
+      </View>
     </SafeAreaView>
   );
 }
@@ -220,34 +242,33 @@ function App(): JSX.Element {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'black',
-    height: height,
-    width: width
+    flexDirection: 'column',
+    backgroundColor: 'grey',
+    alignItems: 'center'
   },
   camera: {
-    height: height,
-    width: width
+    marginTop: 10,
+    width: 100,
+    height: 150,
   },
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
+  bottom: {
+    flexDirection: 'row',
+    color: 'white',
+    width: width,
+    fontSize: 20,
+    fontWeight: 'bold',
   },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
+  item: {
+    backgroundColor: '#f9c2ff',
+    padding: 10,
+    marginVertical: 5,
+    marginHorizontal: 11,
   },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-  },
-  highlight: {
-    fontWeight: '700',
+  title: {
+    fontSize: 32,
   },
 });
 
 export default App;
-function onBarCodeRead(scanResult: any) {
-  throw new Error('Function not implemented.');
-}
+
 
