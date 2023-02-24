@@ -11,12 +11,10 @@ import {
   Dimensions,
   FlatList,
 } from 'react-native';
-
+import TrackPlayer from 'react-native-track-player';
 import { RNCamera } from 'react-native-camera';
 import { CallMusicStart } from './Components/TrackPlayer';
-import TrackPlayer from 'react-native-track-player';
-import { Colors } from 'react-native/Libraries/NewAppScreen';
-import { Float } from 'react-native/Libraries/Types/CodegenTypes';
+import {GetProduct} from './Services/GetProduct';
 
 
 const width = Dimensions.get('window').width;
@@ -24,12 +22,7 @@ const height = Dimensions.get('window').height;
 TrackPlayer.setupPlayer();
 
 
-export interface IServis {
-  barcode: string;
-  product_name?: string;
-  price?: string;
-  stock?: string;
-}
+
 export interface Barcode {
 
   data: string;
@@ -121,44 +114,34 @@ const Products = [
 
 ];
 
+function  App(): JSX.Element {
 
 
-function App(): JSX.Element {
   let nettoplam: number = 0.0;
 
-  function toplamHesapla(Products: IProduct[]): any {
-    console.log(Products);
-    Products.forEach((element,index)  => {
-      console.log(nettoplam + parseFloat(element.price));
-      //nettoplam=nettoplam + parseFloat(element.price)
-      console.log(element.id)
-      /*if (element.id=='999999'){
-        Products.slice(index)
-      }*/
-      setToplam(toplam + parseFloat(element.price));
-
+  function toplamHesapla(datas:any[]) {
+    console.log('Toplam Hesapla : '+datas);
+    datas.forEach((element,index)  => {
+      //console.log(nettoplam + parseFloat(element.price));
+      nettoplam=nettoplam + parseFloat(element.price)
+      console.log(nettoplam)
+      if (!element.id){
+        console.log("Undefined element: " + index);
+        datas.splice(index, 1);
+      }
+      if(nettoplam == 0.0){
+      nettoplam=parseFloat(element.price)
+      }
+      setToplam(nettoplam);
     });
 
   }
-  async function servis(barcode: string): Promise<string> {
-    //fetch('http://192.168.1.155:5001/Product/GetProducts?barcode='+barcode, {
-
-    fetch('http://192.168.1.155:5001/Product/GetProducts?barcode=' + barcode, {
-      method: "GET",
-      headers: { "Content-type": "application/json" }
-    }).then((response) => response.json()).then((json) => {
-      console.log(json[0])
-      console.log(json[0].product_name)
+  async function servis(barcode: string): Promise<void> {
+    GetProduct(barcode).then((data) => {
       CallMusicStart();
-      //MusicStart(); 
-      setProduct_name(json[0].product_name);
-      setPrice(json[0].price)
-      setStock(json[0].stock)
-      const value: IProduct[] = Products;
-      value.push({ id: json[0].id, barcode: json[0].barcode, product_name: json[0].product_name, stock: json[0].stock, price: json[0].price });
-      setData(value)
-      toplamHesapla(value);
-      return json;
+      datas.push({ id: data.id, barcode: data.barcode, product_name: data.product_name, stock: data.stock, price: data.price });
+      setDatas(datas)
+      toplamHesapla(datas);
     }).catch((error) => {
       console.log("error");
       setProduct_name("Ürün Bulunamadı.");
@@ -166,9 +149,6 @@ function App(): JSX.Element {
       setStock("Stok Bulunamadı")
       console.error(error);
     });
-
-    return "";
-
   }
   const [type, setType] = useState(RNCamera.Constants.Type.back);
   const cameraref = useRef(null);
@@ -178,7 +158,7 @@ function App(): JSX.Element {
   const [product_name, setProduct_name] = useState("");
   const [price, setPrice] = useState("");
   const [stock, setStock] = useState("");
-  const [datas, setData] = useState(Products)
+  const [datas, setDatas] = useState(Products)
   function ReadedBarcode(okunan: Barcode): string {
     if (okunan) {
       if (okunan.data != barcode) {
@@ -200,7 +180,10 @@ function App(): JSX.Element {
         marginHorizontal: 4,
         width: width,
       }}>
+        {datas.length > 0 ?
       <Text style={{ fontSize: 12 }}>Ürün: {data.product_name} || Stok: {data.stock} ||Fiyat {data.price}</Text>
+      :<Text>Lütfen Barkod Okutunuz</Text>
+    }
     </View>
   );
 
@@ -217,8 +200,6 @@ function App(): JSX.Element {
         googleVisionBarcodeMode={RNCamera.Constants.GoogleVisionBarcodeDetection.BarcodeMode.ALTERNATE}
       >
       </RNCamera>
-
-      {datas.length > 1 ?
         <View style={{ flex: 1 }}>
           <FlatList
             data={datas}
@@ -226,7 +207,6 @@ function App(): JSX.Element {
             keyExtractor={(item: IProduct) => item.id}
           />
         </View>
-        : <Text>not</Text>}
         <View style={styles.bottom}>
         <Text style={{ fontSize: 30, color: 'white' }}>Toplam : {toplam}</Text>
         {/*<Text>Ürün : {product_name}</Text>
