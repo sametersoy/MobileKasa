@@ -10,11 +10,18 @@ import {
   View,
   Dimensions,
   FlatList,
+  TouchableOpacity,
+  Button,
 } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import TrackPlayer from 'react-native-track-player';
 import { RNCamera } from 'react-native-camera';
 import { CallMusicStart } from './Components/TrackPlayer';
 import {GetProduct} from './Services/GetProduct';
+import LogoTitle from './Components/LogoTitle';
+import MainScreen from './Screens/MainScreen';
+
 
 
 const width = Dimensions.get('window').width;
@@ -113,6 +120,7 @@ const Products = [
   },
 
 ];
+const Stack = createNativeStackNavigator();
 
 function  App(): JSX.Element {
 
@@ -137,8 +145,8 @@ function  App(): JSX.Element {
 
   }
   async function servis(barcode: string): Promise<void> {
+    CallMusicStart();
     GetProduct(barcode).then((data) => {
-      CallMusicStart();
       datas.push({ id: data.id, barcode: data.barcode, product_name: data.product_name, stock: data.stock, price: data.price });
       setDatas(datas)
       toplamHesapla(datas);
@@ -159,6 +167,7 @@ function  App(): JSX.Element {
   const [price, setPrice] = useState("");
   const [stock, setStock] = useState("");
   const [datas, setDatas] = useState(Products)
+  const [isRendered, setIsRendered] = useState(false);
   function ReadedBarcode(okunan: Barcode): string {
     if (okunan) {
       if (okunan.data != barcode) {
@@ -171,24 +180,30 @@ function  App(): JSX.Element {
   }
 
   const Item = ({ data }: { data: IProduct }) => (
+    <TouchableOpacity onPress={() => { console.log("flat List Touch : " + data.product_name)} }>
     <View
       style={{
         backgroundColor: '#eeeeee',
         borderRadius: 0,
-        padding: 10,
-        marginVertical: 8,
+        padding: 7,
+        marginTop: 10,
         marginHorizontal: 4,
         width: width,
       }}>
-        {datas.length > 0 ?
-      <Text style={{ fontSize: 12 }}>Ürün: {data.product_name} || Stok: {data.stock} ||Fiyat {data.price}</Text>
-      :<Text>Lütfen Barkod Okutunuz</Text>
-    }
+      <Text style={{ fontSize: 12, color:'black' }}>Ürün: {data.product_name}</Text> 
+      <Text style={{ fontSize: 12,color:'black' }}>Stok: {data.stock}</Text> 
+      <Text style={{ fontSize: 12,color:'black' }}>Fiyat: {data.price}</Text>
     </View>
+    </TouchableOpacity>
   );
 
-  return (
-    <SafeAreaView style={styles.container}>
+  const renderItem = (item:any, index:any) => {
+
+  }
+
+  function SalesScreen() {
+    return( <SafeAreaView style={styles.container}>
+      <View style={styles.camcontainer} >
       <RNCamera ref={cameraref}
         style={styles.camera}
         type={type}
@@ -200,20 +215,40 @@ function  App(): JSX.Element {
         googleVisionBarcodeMode={RNCamera.Constants.GoogleVisionBarcodeDetection.BarcodeMode.ALTERNATE}
       >
       </RNCamera>
-        <View style={{ flex: 1 }}>
+      <Text style={styles.toplamText }>Toplam : {toplam}</Text>
+      </View>
+        <View style={{ flex: 1, marginTop: 20, marginBottom:20 }}>
           <FlatList
             data={datas}
             renderItem={({ item }) => <Item data={item} />}
             keyExtractor={(item: IProduct) => item.id}
           />
         </View>
-        <View style={styles.bottom}>
-        <Text style={{ fontSize: 30, color: 'white' }}>Toplam : {toplam}</Text>
-        {/*<Text>Ürün : {product_name}</Text>
-        <Text>Fiyat: {price}</Text>
-      <Text>Stok Adet: {stock}</Text>*/}
-      </View>
-    </SafeAreaView>
+    </SafeAreaView>);
+  }
+
+  function alert(arg0: string): void {
+    throw new Error('Function not implemented.');
+  }
+
+  return (
+    <NavigationContainer>{/* Rest of your app code */}
+    <Stack.Navigator>
+        <Stack.Screen name="Main" component={MainScreen} ></Stack.Screen>
+        <Stack.Screen name="Kasa" component={SalesScreen} options={{
+          headerTitle: (props) => <LogoTitle {...props} />,
+          headerLeft: () => (
+            <Button
+              onPress={() => this.props.navi}
+              title="Info"
+              color="#fff"
+            />
+          ),
+        }}/>
+      </Stack.Navigator>
+    </NavigationContainer>
+
+   
   );
 }
 
@@ -224,21 +259,36 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'column',
     backgroundColor: 'grey',
-    alignItems: 'center'
+    //alignItems: 'center'
+  },
+  camcontainer:{
+    alignSelf: 'flex-start',
+    flexDirection: 'row',
+    alignItems:'flex-end',
+    justifyContent: 'space-between',
   },
   camera: {
-    marginTop: 10,
-    width: 100,
+    //alignItems:'flex-end',
+    //alignSelf: 'flex-end',
+    marginLeft: 10,
+    width: 150,
     height: 150,
+    alignItems:'flex-start',
+    alignSelf: 'flex-start',
+    marginBottom: 0,
   },
-  bottom: {
-    flexDirection: 'row',
-    color: 'white',
-    width: width,
+  toplamText:{
+    marginLeft:10,
+    color:'black',
     fontSize: 20,
     fontWeight: 'bold',
+    marginBottom: -23,
+    alignItems:'flex-end',
+    alignSelf: 'flex-end',
+    
   },
   item: {
+    //marginTop: 100,
     backgroundColor: '#f9c2ff',
     padding: 10,
     marginVertical: 5,

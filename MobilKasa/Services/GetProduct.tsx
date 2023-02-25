@@ -1,5 +1,6 @@
 import React from "react";
 import { InteractionManager } from "react-native/types";
+import {base_url,api_getProduct} from "./ServisConfig"
 
 interface IServis {
     id: string;
@@ -9,7 +10,7 @@ interface IServis {
     stock: string;
   }
 export function GetProduct(barcode: string): Promise<IServis> {
-    var data = fetch('http://192.168.1.155:5001/Product/GetProducts?barcode=' + barcode, {
+    var data = fetch(base_url+api_getProduct + barcode, {
       method: "GET",
       headers: { "Content-type": "application/json" }
     }).then((response) => response.json()).then((json) => {
