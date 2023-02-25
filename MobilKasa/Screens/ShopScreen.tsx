@@ -19,8 +19,7 @@ import TrackPlayer from 'react-native-track-player';
 import { RNCamera } from 'react-native-camera';
 import { CallMusicStart } from '../Components/TrackPlayer';
 import {GetProduct} from '../Services/GetProduct';
-import LogoTitle from '../Components/LogoTitle';
-import MainScreen from '../Screens/MainScreen';
+
 
 
 const width = Dimensions.get('window').width;
@@ -119,22 +118,20 @@ export interface Barcode {
   
   ];
   const Stack = createNativeStackNavigator();
+  let readedcount=0;
 
   function  ShopScreen(): JSX.Element {
-
-
     let nettoplam: number = 0.0;
-  
     function toplamHesapla(datas:any[]) {
       console.log('Toplam Hesapla : '+datas);
+      if(readedcount == 0){
+        datas.splice(0, 1);
+      }
+      readedcount=readedcount + 1;
       datas.forEach((element,index)  => {
-        //console.log(nettoplam + parseFloat(element.price));
         nettoplam=nettoplam + parseFloat(element.price)
         console.log(nettoplam)
-        if (!element.id){
-          console.log("Undefined element: " + index);
-          datas.splice(index, 1);
-        }
+   
         if(nettoplam == 0.0){
         nettoplam=parseFloat(element.price)
         }
@@ -150,9 +147,6 @@ export interface Barcode {
         toplamHesapla(datas);
       }).catch((error) => {
         console.log("error");
-        setProduct_name("Ürün Bulunamadı.");
-        setPrice("Fiyat Bulunamadı")
-        setStock("Stok Bulunamadı")
         console.error(error);
       });
     }
@@ -161,11 +155,7 @@ export interface Barcode {
   
     const [barcode, setBarcode] = useState("");
     const [toplam, setToplam] = useState(0.0);
-    const [product_name, setProduct_name] = useState("");
-    const [price, setPrice] = useState("");
-    const [stock, setStock] = useState("");
     const [datas, setDatas] = useState(Products)
-    const [isRendered, setIsRendered] = useState(false);
     function ReadedBarcode(okunan: Barcode): string {
       if (okunan) {
         if (okunan.data != barcode) {
@@ -179,6 +169,7 @@ export interface Barcode {
   
     const Item = ({ data }: { data: IProduct }) => (
       <TouchableOpacity onPress={() => { console.log("flat List Touch : " + data.product_name)} }>
+        {datas.length > 0 ?
       <View
         style={{
           backgroundColor: '#eeeeee',
@@ -188,10 +179,24 @@ export interface Barcode {
           marginHorizontal: 4,
           width: width,
         }}>
+    
         <Text style={{ fontSize: 12, color:'black' }}>Ürün: {data.product_name}</Text> 
         <Text style={{ fontSize: 12,color:'black' }}>Stok: {data.stock}</Text> 
         <Text style={{ fontSize: 12,color:'black' }}>Fiyat: {data.price}</Text>
-      </View>
+        </View> 
+        :
+        <View
+        style={{
+          backgroundColor: '#eeeeee',
+          borderRadius: 0,
+          padding: 7,
+          marginTop: 10,
+          marginHorizontal: 4,
+          width: width,
+        }}>
+        <Text></Text>
+     
+      </View>   }
       </TouchableOpacity>
     );
   
