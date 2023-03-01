@@ -16,7 +16,7 @@ export function MainScreen(props: any): JSX.Element {
             </View>
             <View style={styles.content2}>
                 <TouchableOpacity
-                    onPress={() => props.navigation.navigate("Kasa")}>
+                    onPress={() => props.navigation.navigate("Stok")}>
                     <Icon name="storage" size={100} color="white" />
                 </TouchableOpacity>
                 <TouchableOpacity
