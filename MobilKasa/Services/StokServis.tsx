@@ -10,15 +10,6 @@ interface IServis {
     stock: string;
   }
 
-  type IServiss = [{
-    id: string;
-    barcode: string;
-    product_name: string;
-    price: string;
-    stock: string;
-}]
-
-
 export function AddStock(products_id: string, piece:string): Promise<any> {
   console.log("AddStock"+products_id+piece);
   var data = fetch(base_url+api_addStock + products_id+"&piece="+piece, {

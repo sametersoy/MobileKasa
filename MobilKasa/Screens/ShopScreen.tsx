@@ -19,6 +19,7 @@ import { RNCamera } from 'react-native-camera';
 import { CallMusicStart } from '../Components/TrackPlayer';
 import {GetProduct,ProductAdd} from '../Services/GetProduct';
 import {AddPrice} from '../Services/PriceServis';
+import {AddStock} from '../Services/StokServis';
 
 import { Modal } from 'react-native';
 export function generateUUID(digits:number) {
@@ -131,10 +132,19 @@ export interface Barcode {
     async function servis(barcode: string): Promise<void> {
       console.log("Okunan Bardoce : "+barcode)
       CallMusicStart();
-      GetProduct(barcode).then((data) => {
-        datas.push({ id: data.id, barcode: data.barcode, product_name: data.product_name, stock: data.stock, price: data.price, guid: generateUUID(10) });
+     await GetProduct(barcode).then((data) => {
+        let g_price:any="";
+        let g_stock:any="";
+        if(data.price != null && data.price != undefined){
+          datas.push({ id: data.id, barcode: data.barcode, product_name: data.product_name, stock: data.stock, price: data.price, guid: generateUUID(10) });
+        
+        }else{
+          console.log('else nothing');
+          datas.push({ id: data.id, barcode: data.barcode, product_name: data.product_name, stock: 0, price: 0, guid: generateUUID(10) });
+        }
         setDatas(datas)
         toplamHesapla(datas);
+        
       }).catch((error) => {
         setModalBarcode(barcode)
         setisModalVisible(true)
@@ -160,6 +170,7 @@ export interface Barcode {
     const [modalBarcode, setModalBarcode] = useState<string>("")
     const [modalUrunAdi, setModalUrunAdi] = useState<string>("")
     const [modalPrice, setModalPrice] = useState<string>("")
+    const [modalStock, setModalStock] = useState<string>("0")
 
     async function AddProduct(): Promise<void> {
       console.log("AddProduct: "+modalBarcode+ " : "+ modalUrunAdi+" : "+modalPrice)
@@ -168,6 +179,7 @@ export interface Barcode {
       let p_barcode:string="";
       let p_name:string="";
       let p_price:string="";
+      let p_stock:string="";
      await ProductAdd(modalBarcode,modalUrunAdi).then((data)=>{
         console.log("Shop Screen AddProduct: "+data.id)
         prod_id = data.id;
@@ -176,15 +188,25 @@ export interface Barcode {
         p_name=data.product_name;
 
       }).catch((error) => {
-        console.log("error");
+        console.log("Shop Screen AddProduct error");
         console.error(error);
       });
      await AddPrice(prod_id,modalPrice).then((price)=>{
         console.log("Shop Screen AddPrice: "+price.id)
         p_price=price.price;
+      }).catch((error) => {
+        console.log("Shop Screen AddPrice error");
+        console.error(error);
+      });
+      await AddStock(prod_id,modalStock).then((stok)=>{
+        console.log("Shop Screen AddStock: "+stok.id)
+        p_stock=stok.piece;
+      }).catch((error) => {
+        console.log("Shop Screen AddStock error");
+        console.error(error);
       });
       setisModalVisible(false)
-      datas.push({ id: prod_id, barcode: p_barcode, product_name: p_name, stock: "0", price: p_price, guid: generateUUID(10) });
+      datas.push({ id: prod_id, barcode: p_barcode, product_name: p_name, stock: p_stock, price: p_price, guid: generateUUID(10) });
       setDatas(datas)
       toplamHesapla(datas);
     }
@@ -283,6 +305,12 @@ export interface Barcode {
                    placeholder="Fiyat" 
                    value={modalPrice} 
                    onChangeText={(text) => setModalPrice(text)}    
+                  ></TextInput>
+                  <TextInput
+                   style={{height: 45,backgroundColor: 'azure',margin:20, fontSize: 20}}  
+                   placeholder="Stok" 
+                   value={modalStock} 
+                   onChangeText={(text) => setModalStock(text)}    
                   ></TextInput>
                 <Button title="Kaydet" onPress={AddProduct} ></Button>
                   

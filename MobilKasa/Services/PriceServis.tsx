@@ -21,7 +21,7 @@ interface IServis {
 
 export function AddPrice(products_id: string, price:string): Promise<any> {
   console.log("AddPrice"+products_id+price);
-  var data = fetch(base_url+api_addStock + products_id+"&price="+price, {
+  var data = fetch(base_url+api_addPrice + products_id+"&price="+price, {
     method: "GET",
     headers: { "Content-type": "application/json" }
   }).then((response) => response.json()).then((json) => {
