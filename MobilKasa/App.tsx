@@ -17,7 +17,7 @@ function  App(): JSX.Element {
         <Stack.Screen name="Main" component={MainScreen} options={{headerShown:false}} ></Stack.Screen>
         <Stack.Screen name="Kasa" component={ShopScreen} ></Stack.Screen>
         <Stack.Screen name="Stok" component={StocksScreen} ></Stack.Screen>
-        <Stack.Screen name="Order" component={OrderScreen} ></Stack.Screen>
+        <Stack.Screen name="Order" component={OrderScreen} options={{ title: 'Satış' }} ></Stack.Screen>
         <Stack.Screen name="Setting" component={SettingScreen} ></Stack.Screen>
       </Stack.Navigator>
     </NavigationContainer>   
