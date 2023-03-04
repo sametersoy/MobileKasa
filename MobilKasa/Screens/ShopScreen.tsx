@@ -113,7 +113,18 @@ const Products = [
 const Stack = createNativeStackNavigator();
 let readedcount = 0;
 
-function ShopScreen(): JSX.Element {
+function ShopScreen(props:any): JSX.Element {
+
+  React.useEffect(() => {
+   props.navigation.setOptions({
+      headerRight: () => (
+        <Button onPress={() => {
+          props.navigation.navigate("NewProduct");
+        }} title="Yeni Ürün" />
+      ),
+    });
+  }, [props.navigation]);
+
   let nettoplam: number = 0.0;
   function toplamHesapla(datas: any[]) {
     console.log('Toplam Hesapla : ' + datas);

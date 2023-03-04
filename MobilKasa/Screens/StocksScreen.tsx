@@ -41,11 +41,18 @@ export interface IProduct {
 const width = Dimensions.get('window').width;
 const height = Dimensions.get('window').height;
 
-function StockScreen(): JSX.Element {
+function StockScreen(props:any): JSX.Element {
     const [datas, setDatas] = useState([{}])
     const [loading, setLoading] = useState(false)
     useEffect(() => {
         servis(0);
+        props.navigation.setOptions({
+          headerRight: () => (
+            <Button onPress={() => {
+              props.navigation.navigate("NewProduct");
+            }} title="Yeni Ürün" />
+          ),
+        });
     }, []); 
     
     async function servis(page_count: number): Promise<void> {
