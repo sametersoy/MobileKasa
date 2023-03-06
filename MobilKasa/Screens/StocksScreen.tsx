@@ -86,7 +86,7 @@ function StockScreen(props:any): JSX.Element {
           console.log("ıtem : " +  data.price)
           onPressItem(data)
           }}>
-        {//data.product_name ?  
+         {data.id ? 
         <View
           style={{
             backgroundColor: '#eeeeee',
@@ -96,13 +96,12 @@ function StockScreen(props:any): JSX.Element {
             marginHorizontal: 4,
             width: width,
           }}>
-             
+        
           <Text style={{ fontSize: 12, color:'black' }}>Ürün: {data.product_name}</Text> 
           <Text style={{ fontSize: 12,color:'black' }}>Stok: {data.stock}</Text> 
           <Text style={{ fontSize: 12,color:'black' }}>Fiyat: {data.price}</Text>
-          </View> 
-          //: null 
-        }
+          </View>  
+          : null }  
         </TouchableOpacity> 
       );
 

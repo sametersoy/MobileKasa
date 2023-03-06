@@ -3,6 +3,8 @@ import view, { ActivityIndicator, Dimensions, FlatList, Text, TouchableOpacity, 
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { GetOrder } from '../Services/OrderServis';
 import { generateUUID } from '../Components/GenerateGUID';
+import { getParsedDate } from '../Components/ParseDate';
+
 
 const width = Dimensions.get('window').width;
 const height = Dimensions.get('window').height;
@@ -15,6 +17,7 @@ export interface IProduct {
     kdv: string;
     guid: string;
     piece:string;
+    created_date:Date;
 }
 
 function OrderScreen(): JSX.Element {
@@ -29,7 +32,7 @@ function OrderScreen(): JSX.Element {
        await GetOrder().then((data) => {
           console.log("GetOrder Orderscreen : "+data)
           data.forEach((d:any) => {
-            datas.push({ id: d.id, price: d.price, piece: d.piece, guid: generateUUID(10) });
+            datas.push({ id: d.id, price: d.price, piece: d.piece,created_date:d.created_date, guid: generateUUID(10) });
         });
           //datas.push({ id: data.id, barcode: data.barcode, product_name: data.product_name, stock: data.stock, price: data.price });
           setDatas(datas)
@@ -55,7 +58,7 @@ function OrderScreen(): JSX.Element {
           console.log("ıtem : " +  data.price)
           onPressItem(data)
           }}>
-        {//data.product_name ?  
+        {data.id ?  
         <View
           style={{
             backgroundColor: '#eeeeee',
@@ -68,8 +71,9 @@ function OrderScreen(): JSX.Element {
              
           <Text style={{ fontSize: 12,color:'black' }}>Adet Ürün: {data.piece}</Text> 
           <Text style={{ fontSize: 12,color:'black' }}>Toplam Fiyat: {data.price}</Text>
+          <Text style={{ fontSize: 12,color:'black' }}>Tarih: {data.created_date ? getParsedDate(data.created_date) :null}</Text>
           </View> 
-          //: null 
+          : null 
         }
         </TouchableOpacity> 
       );

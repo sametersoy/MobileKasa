@@ -15,6 +15,9 @@ import COLORS from '../Components/Colors';
 import Button from '../Components/Button';
 import Input from '../Components/Input';
 import Loader from '../Components/Loader';
+import { ProductAdd } from '../Services/GetProduct';
+import { AddPrice } from '../Services/PriceServis';
+import { AddStock } from '../Services/StokServis';
 interface Props {
     error: any
     iconName: string
@@ -74,17 +77,71 @@ export function NewProduct(props: any): JSX.Element {
         }
     };
 */
-    const register = () => {
+   async function register() {
         setLoading(true);
-        setTimeout(() => {
+        /*setTimeout(() => {
             try {
-                setLoading(false);
                 AsyncStorage.setItem('userData', JSON.stringify(inputs));
                 props.navigation.navigate('LoginScreen');
             } catch (error) {
                 Alert.alert('Error', 'Something went wrong');
             }
-        }, 3000);
+        }, 3000);*/
+        let prod_id: string = "";
+        let added_product: string = "";
+        let p_barcode: string = "";
+        let p_name: string = "";
+        let p_price: string = "";
+        let p_stock: string = "";
+        console.log("1 : "+inputs.barcode);
+        
+        await ProductAdd(inputs.barcode, inputs.productname).then((data) => {
+          console.log("Newproduct Screen AddProduct: " + data.id)
+          prod_id = data.id;
+          added_product = data.barcode;
+          p_barcode = data.barcode;
+          p_name = data.product_name;
+    
+        }).catch((error) => {
+          console.log("Newproduct Screen AddProduct error");
+          console.error(error);
+        });
+   
+        await AddPrice(prod_id, inputs.price).then((price) => {
+          console.log("Newproduct Screen AddPrice: " + price.id)
+          p_price = price.price;
+        }).catch((error) => {
+          console.log("Newproduct Screen AddPrice error");
+          console.error(error);
+        });
+        await AddStock(prod_id, inputs.stock).then((stok) => {
+          console.log("Newproduct Screen AddStock: " + stok.id)
+          p_stock = stok.piece;
+        }).catch((error) => {
+          console.log("Newproduct Screen AddStock error");
+          console.error(error);
+        });
+        Alert.alert('İşlem Başarılı', 'Ürün Başarı ile Kayıt Edildi.');
+        handleOnchange("", 'barcode')
+        handleOnchange("", 'productname')
+        handleOnchange(0, 'price')
+        handleOnchange(0, 'stock')
+        setInputs({
+            barcode: '',
+            productname: '',
+            price: '',
+            stock: '',
+        })
+        setErrors({
+            barcode: '',
+            productname: '',
+            price: '',
+            stock: '',
+        })
+        //props.navigation.navigate('Main');
+
+
+        setLoading(false);
     };
 
     const handleOnchange = (text: any, input: string) => {
@@ -112,6 +169,7 @@ export function NewProduct(props: any): JSX.Element {
                     error={errors.barcode}
                     columnTitle={''}
                     password={undefined}
+                    value={inputs.barcode.toString()}
                     onChangeText={function (text: any): void {
                         console.log("onChangeText : " + text)
                         handleOnchange(text, 'barcode')
@@ -125,6 +183,7 @@ export function NewProduct(props: any): JSX.Element {
                     error={errors.productname}
                     columnTitle={''}
                     password={undefined}
+                    value={inputs.productname.toString()}
                     onChangeText={function (text: any): void {
                         console.log("onChangeText : " + text)
                         handleOnchange(text, 'productname')
@@ -138,6 +197,7 @@ export function NewProduct(props: any): JSX.Element {
                     error={errors.price}
                     columnTitle={''}
                     password={undefined}
+                    value={inputs.price.toString()}
                     onChangeText={function (text: any): void {
                         console.log("onChangeText : " + text)
                         handleOnchange(text, 'price')
@@ -151,6 +211,7 @@ export function NewProduct(props: any): JSX.Element {
                     error={errors.stock}
                     columnTitle={''}
                     password={undefined}
+                    value={inputs.stock.toString()}
                     onChangeText={function (text: any): void {
                         console.log("onChangeText : " + text)
                         handleOnchange(text, 'stock')
@@ -159,7 +220,7 @@ export function NewProduct(props: any): JSX.Element {
                 <TouchableOpacity
                     onPress={() => {
                         console.log("Kaydet Test : "+JSON.stringify(inputs));
-
+                        register();
                     }}
                     activeOpacity={0.7}
                     style={{
