@@ -15,9 +15,6 @@ import NewProduct from './Screens/NewProduct';
 const Stack = createNativeStackNavigator();
 
 function  App(): JSX.Element {
-function goFunc(){
-  StackActions.push("NewProduct")
-}
 
   return (
     <NavigationContainer>{/* Rest of your app code */}

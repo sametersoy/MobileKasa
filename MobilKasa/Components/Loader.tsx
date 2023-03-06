@@ -7,7 +7,7 @@ import {
   StyleSheet,
 } from 'react-native';
 import COLORS from './Colors';
-const Loader = ({visible = false}) => {
+const Loader = ({visible = false}):any => {
   const {width, height} = useWindowDimensions();
   return (
     visible && (

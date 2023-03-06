@@ -1,7 +1,11 @@
-import React from 'react';
+import React, { FC } from 'react';
 import {TouchableOpacity, Text} from 'react-native';
 import COLORS from './Colors';
-const Button = (title:string, onPress = () => {}) => {
+interface Props {
+  title:string
+  onPress:()=>void
+}
+const Button = (title:string,onPress:()=>void): JSX.Element => {
   return (
     <TouchableOpacity
       onPress={onPress}

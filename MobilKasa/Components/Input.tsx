@@ -1,15 +1,27 @@
-import React from 'react';
+import React, { FC } from 'react';
 import {View, Text, TextInput, StyleSheet} from 'react-native';
 import COLORS from './Colors';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-const Input = (
-  label: string,
-  iconName: string,
-  error: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | React.ReactFragment | React.ReactPortal | null | undefined,
-  password: any,
+import Icon from 'react-native-vector-icons/MaterialIcons';
+
+interface Props {
+  placeholder:string
+  label:string
+  iconName: string
+  columnTitle: string
+  error: any
+  password:any
+  onFocus:()=>void
+  onChangeText:(text: any)=>void
+}
+
+const Input: FC<Props> = ({
+  label,
+  iconName,
+  error,
+  password,
   onFocus = () => {},
-  ...props: any[]
-) => {
+  ...props
+}) => {
   const [hidePassword, setHidePassword] = React.useState(password);
   const [isFocused, setIsFocused] = React.useState(false);
   return (
@@ -75,3 +87,4 @@ const style = StyleSheet.create({
 });
 
 export default Input;
+
