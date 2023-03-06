@@ -21,7 +21,7 @@ import { CallMusicStart } from '../Components/TrackPlayer';
 import { GetProduct, ProductAdd } from '../Services/GetProduct';
 import { AddPrice } from '../Services/PriceServis';
 import { AddStock } from '../Services/StokServis';
-import { AddOrder } from '../Services/OrderServis';
+import { AddOrder, AddOrderDetails,IOrderDetail } from '../Services/OrderServis';
 
 
 import { Modal } from 'react-native';
@@ -234,24 +234,43 @@ function ShopScreen(props:any): JSX.Element {
     setLoading(true)
     let total_price: number = 0;
     let total_piece: number = 0;
+    let order_id: number = 0;
     datas.forEach((order, index) => {
       total_piece = total_piece + 1;
       total_price = total_price + order.price
     })
     if (total_piece > 0) {
-      await AddOrder(total_price, total_piece).then(() => {
-        datas.splice(0, datas.length);
-        //datas.push({ id: "", barcode: "", product_name: "", stock: 0, price: 0, guid: generateUUID(10) });
-        setDatas(datas);
-        setToplam(0);
-        setLoading(false);
-        /* while (datas.length > 0) {
-           datas.pop();
-         }*/
+      await AddOrder(total_price, total_piece).then((res) => {
+        console.log(res.id)
+        order_id=res.id
+        console.log("oRder ID : "+ order_id)
       }).catch((error) => {
         console.log("orderClick shopscreen error");
         console.error(error);
       })
+  
+      if(order_id != 0){
+        let orderDetails:IOrderDetail[]=[]
+
+        datas.forEach((order, index) => {
+          console.log("devam" );
+          if(order_id != undefined && order_id != 0){
+          let orderDetail:IOrderDetail={order_id:order_id,product_id:order.id,price:order.price}
+            orderDetails.push(orderDetail)
+          console.log("orderdetail : "+orderDetail)
+          }
+        })
+        await AddOrderDetails(orderDetails).then((res) => {
+          datas.splice(0, datas.length);
+          setDatas(datas);
+          setToplam(0);
+          setLoading(false);
+        }).catch((error) => {
+          console.log("orderClick shopscreen AddOrderDetails error");
+          console.error(error);
+        })
+
+      }
     }
     console.log("orderClick hesaplanan : " + total_price + " piece : " + total_piece);
 
