@@ -18,3 +18,6 @@ export const api_addOrder = '/Order/AddOrder?price=';
 
 export const api_addOrderDetails = '/OrderDetail/AddOrderDetail';
 
+export const api_getOrderDetail = '/OrderDetail/GetOrderDetail?orderId=';
+
+

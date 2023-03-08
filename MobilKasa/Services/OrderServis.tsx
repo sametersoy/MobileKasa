@@ -1,6 +1,6 @@
 import React from "react";
 import { InteractionManager } from "react-native/types";
-import {base_url,api_addOrder,api_GetOrder, api_addOrderDetails} from "./ServisConfig"
+import {base_url,api_addOrder,api_GetOrder, api_addOrderDetails, api_getOrderDetail} from "./ServisConfig"
 
 export interface IOrderDetail {
   order_id:number
@@ -44,6 +44,19 @@ export function AddOrder(price: number, piece:number): Promise<any> {
       return json;
     }).catch((error) => {
       console.log("AddOrderDetails Service Error: " + error);
+    });
+    return data;
+  }
+
+  export function GetOrderDetail(orderId:string): Promise<any> {
+    console.log("GetOrderDetail servis"+api_getOrderDetail);
+    var data = fetch(base_url+api_getOrderDetail + orderId, {
+      method: "GET",
+      headers: { "Content-type": "application/json" },
+      }).then((response) => response.json()).then((json) => {
+      return json;
+    }).catch((error) => {
+      console.log("GetOrderDetail Service Error: " + error);
     });
     return data;
   }

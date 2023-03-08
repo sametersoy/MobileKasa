@@ -85,7 +85,12 @@ function StockScreen(props:any): JSX.Element {
         <TouchableOpacity onPress={() => { 
           console.log("TouchableOpacity : " + data.id)
           console.log("ıtem : " +  data.price)
-          onPressItem(data)
+          //onPressItem(data)
+          props.navigation.navigate("StockDetail",{
+            itemId: 86,
+            otherParam: 'anything you want here',
+            stock:data
+          })
           }}>
          {data.id ? 
         <View

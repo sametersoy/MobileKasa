@@ -9,6 +9,7 @@ import SettingScreen from './Screens/SettingScreen';
 import { Button } from 'react-native';
 import NewProduct from './Screens/NewProduct';
 import { OrderDetail } from './Screens/OrderDetail';
+import StockDetail from './Screens/StockDetail';
 
 
 
@@ -27,7 +28,7 @@ function  App(): JSX.Element {
         <Stack.Screen name="Setting" component={SettingScreen} options={{ title: 'Ayarlar' }}></Stack.Screen>
         <Stack.Screen name="NewProduct" component={NewProduct} options={{ title: 'Yeni Ürün' }} ></Stack.Screen>
         <Stack.Screen name="OrderDetail" component={OrderDetail} options={{ title: 'Satış Detay' }} ></Stack.Screen>
-
+        <Stack.Screen name="StockDetail" component={StockDetail} options={{ title: 'Stok Detay' }} ></Stack.Screen>
       </Stack.Navigator>
     </NavigationContainer>   
   );
