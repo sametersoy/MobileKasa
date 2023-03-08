@@ -1,6 +1,6 @@
 import React from "react";
 import { InteractionManager } from "react-native/types";
-import {base_url,api_getProduct, api_addProduct, api_addPrice, api_paging} from "./ServisConfig"
+import {base_url,api_getProduct, api_addProduct, api_addPrice, api_paging, api_getProductId} from "./ServisConfig"
 
 interface IServis {
     id: string;
@@ -39,6 +39,17 @@ interface IServis {
       return json[0];
     }).catch((error) => {
       console.log("GetProduct Service Error: " + error);
+    });
+    return data;
+  }
+  export function GetProductId(productId: string): Promise<IServis> {
+    var data = fetch(base_url+api_getProductId + productId, {
+      method: "GET",
+      headers: { "Content-type": "application/json" }
+    }).then((response) => response.json()).then((json) => {
+      return json[0];
+    }).catch((error) => {
+      console.log("GetProductId Service Error: " + error);
     });
     return data;
   }

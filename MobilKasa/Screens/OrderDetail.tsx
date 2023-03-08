@@ -1,6 +1,7 @@
 import react, { useEffect, useState } from 'react'
 import { Dimensions, FlatList, Text, TouchableOpacity, View } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import { GetProduct } from '../Services/GetProduct';
 import { GetOrderDetail } from '../Services/OrderServis';
 const width = Dimensions.get('window').width;
 const height = Dimensions.get('window').height;
@@ -15,6 +16,8 @@ interface OrderDetail {
     created_date: string,
     created_by: string,
     updated_by: string
+    product_name: string,
+    product_price: string
 
 }
 
@@ -34,17 +37,18 @@ export function OrderDetail(props: any): JSX.Element {
             //let orderDetail:OrderDetail = res.json();    
         });
     },[])
+
     const Item = ({ data }: { data: OrderDetail }) => (
 
         <TouchableOpacity onPress={() => {
             console.log("TouchableOpacity : " + data.id)
             console.log("ıtem : " + data.price)
             //onPressItem(data)
-            props.navigation.navigate("StockDetail", {
+          /*   props.navigation.navigate("StockDetail", {
                 itemId: 86,
                 otherParam: 'anything you want here',
                 stock: data
-            })
+            }) */
         }}>
             {//data.id ? 
                 <View
@@ -68,9 +72,8 @@ export function OrderDetail(props: any): JSX.Element {
                         elevation: 8,
                     }}>
 
-                    <Text style={{ fontSize: 12, color: 'black' }}>product_id: {data.product_id}</Text>
-                    <Text style={{ fontSize: 12, color: 'black' }}>price: {data.price}</Text>
-                    <Text style={{ fontSize: 12, color: 'black' }}>Fiyat: {data.price}</Text>
+                    <Text style={{ fontSize: 12, color: 'black' }}>Ürün Adı: {data.product_name}</Text>
+                    <Text style={{ fontSize: 12, color: 'black' }}>Ürün Fiyatı: {data.product_price}</Text>
                     <View style={{ flex: 1, position: 'absolute', flexDirection: 'column', justifyContent: 'center', alignItems: 'flex-end', alignSelf: 'flex-end', alignContent: 'center' }}>
                         <Icon style={{ justifyContent: 'flex-end', alignItems: 'center', }} name="chevron-right" size={50} color="grey" />
                     </View>

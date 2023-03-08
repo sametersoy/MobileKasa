@@ -4,6 +4,8 @@ export const base_url = 'http://192.168.1.155:5001';
 
 export const api_getProduct = '/Product/GetProducts?barcode=';
 
+export const api_getProductId = '/Product/GetProducts?productId=';
+
 export const api_addProduct = '/Product/AddProducts?barcode=';
 
 export const api_addPrice = '/Price/AddPrices?products_id=';
