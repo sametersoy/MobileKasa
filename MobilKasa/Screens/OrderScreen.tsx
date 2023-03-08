@@ -4,6 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { GetOrder } from '../Services/OrderServis';
 import { generateUUID } from '../Components/GenerateGUID';
 import { getParsedDate } from '../Components/ParseDate';
+import  Icon  from 'react-native-vector-icons/MaterialIcons';
 
 
 const width = Dimensions.get('window').width;
@@ -20,7 +21,7 @@ export interface IProduct {
     created_date:Date;
 }
 
-function OrderScreen(): JSX.Element {
+function OrderScreen(props:any): JSX.Element {
     const [datas, setDatas] = useState([{}])
     const [loading, setLoading] = useState(false)
     useEffect(() => {
@@ -55,23 +56,40 @@ function OrderScreen(): JSX.Element {
     const Item = ({ data }: { data: IProduct }) => (
         <TouchableOpacity onPress={() => { 
           console.log("TouchableOpacity : " + data.id)
-          console.log("ıtem : " +  data.price)
           onPressItem(data)
+          props.navigation.navigate("OrderDetail",{
+            itemId: 86,
+            otherParam: 'anything you want here',
+            order:data
+          })
           }}>
         {data.id ?  
         <View
           style={{
             backgroundColor: '#eeeeee',
-            borderRadius: 0,
+            borderBottomEndRadius: 15,
+            borderTopEndRadius: 15,
+            borderColor: '#000000',
             padding: 7,
             marginTop: 10,
             marginHorizontal: 4,
             width: width,
+            shadowColor: "#000",
+            shadowOffset: {
+              width: 0,
+              height: 4,
+            },
+            shadowOpacity: 0.30,
+            shadowRadius: 4.65,
+
+            elevation: 8,
           }}>
-             
           <Text style={{ fontSize: 12,color:'black' }}>Adet Ürün: {data.piece}</Text> 
           <Text style={{ fontSize: 12,color:'black' }}>Toplam Fiyat: {data.price}</Text>
           <Text style={{ fontSize: 12,color:'black' }}>Tarih: {data.created_date ? getParsedDate(data.created_date) :null}</Text>
+          <View style={{flex:1, position:'absolute', flexDirection:'column', justifyContent:'center', alignItems:'flex-end',alignSelf:'flex-end',alignContent:'center' }}>
+          <Icon style={{ justifyContent:'flex-end', alignItems:'center',  }} name="chevron-right" size={50} color="grey" />
+          </View>
           </View> 
           : null 
         }
@@ -100,7 +118,7 @@ function OrderScreen(): JSX.Element {
           keyExtractor={(item: IProduct) => item.guid}
           //onEndReached={getMoreProduct}
           //onEndReachedThreshold={0.2}
-          //ListFooterComponent={footerIndicator}
+          ListFooterComponent={footerIndicator}
 
         />
       </SafeAreaView >

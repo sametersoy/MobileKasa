@@ -8,6 +8,7 @@ import OrderScreen from './Screens/OrderScreen';
 import SettingScreen from './Screens/SettingScreen';
 import { Button } from 'react-native';
 import NewProduct from './Screens/NewProduct';
+import { OrderDetail } from './Screens/OrderDetail';
 
 
 
@@ -25,6 +26,8 @@ function  App(): JSX.Element {
         <Stack.Screen name="Order" component={OrderScreen} options={{ title: 'Satışlar' }} ></Stack.Screen>
         <Stack.Screen name="Setting" component={SettingScreen} options={{ title: 'Ayarlar' }}></Stack.Screen>
         <Stack.Screen name="NewProduct" component={NewProduct} options={{ title: 'Yeni Ürün' }} ></Stack.Screen>
+        <Stack.Screen name="OrderDetail" component={OrderDetail} options={{ title: 'Satış Detay' }} ></Stack.Screen>
+
       </Stack.Navigator>
     </NavigationContainer>   
   );

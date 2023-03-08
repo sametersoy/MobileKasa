@@ -25,14 +25,9 @@ import { AddOrder, AddOrderDetails,IOrderDetail } from '../Services/OrderServis'
 
 
 import { Modal } from 'react-native';
-export function generateUUID(digits: number) {
-  let str = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVXZ';
-  let uuid = [];
-  for (let i = 0; i < digits; i++) {
-    uuid.push(str[Math.floor(Math.random() * str.length)]);
-  }
-  return uuid.join('');
-}
+import { generateUUID } from './StocksScreen';
+import Icon from 'react-native-vector-icons/MaterialIcons';
+
 
 
 const width = Dimensions.get('window').width;
@@ -302,11 +297,23 @@ function ShopScreen(props:any): JSX.Element {
             marginTop: 10,
             marginHorizontal: 4,
             width: width,
+            shadowColor: "#000",
+            shadowOffset: {
+              width: 0,
+              height: 4,
+            },
+            shadowOpacity: 0.30,
+            shadowRadius: 4.65,
+
+            elevation: 8,
           }}>
 
           <Text style={{ fontSize: 12, color: 'black' }}>Ürün: {data.product_name}</Text>
           <Text style={{ fontSize: 12, color: 'black' }}>Stok: {data.stock}</Text>
           <Text style={{ fontSize: 12, color: 'black' }}>Fiyat: {data.price}</Text>
+          <View style={{flex:1, position:'absolute', flexDirection:'column', justifyContent:'center', alignItems:'flex-end',alignSelf:'flex-end',alignContent:'center' }}>
+          <Icon style={{ justifyContent:'center', alignItems:'center', marginRight:15, marginTop:15  }} name="delete-outline" size={35} color="grey" />
+          </View>
         </View>
         :
         <View
