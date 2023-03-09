@@ -17,6 +17,7 @@ import {
     ActivityIndicator,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import SearchBar from '../Components/SearchBar';
 
 export function generateUUID(digits:number) {
   let str = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVXZ';
@@ -45,6 +46,10 @@ const height = Dimensions.get('window').height;
 function StockScreen(props:any): JSX.Element {
     const [datas, setDatas] = useState([{}])
     const [loading, setLoading] = useState(false)
+
+    const [searchPhrase, setSearchPhrase] = useState("");
+    const [clicked, setClicked] = useState(false);
+    const [fakeData, setFakeData] = useState();
     useEffect(() => {
         servis(0);
         props.navigation.setOptions({
@@ -139,6 +144,10 @@ function StockScreen(props:any): JSX.Element {
 
     return (
         <SafeAreaView>
+          <SearchBar searchPhrase={searchPhrase}
+        setSearchPhrase={setSearchPhrase}
+        clicked={clicked}
+        setCLicked={setClicked} />
         <FlatList
           data={datas}
           renderItem={({ item }) => (
