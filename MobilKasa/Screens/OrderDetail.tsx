@@ -2,7 +2,7 @@ import react, { useEffect, useState } from 'react'
 import { Dimensions, FlatList, Text, TouchableOpacity, View } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { GetProduct } from '../Services/GetProduct';
-import { GetOrderDetail } from '../Services/OrderServis';
+import { DeleteOrderDetail, GetOrderDetail } from '../Services/OrderServis';
 const width = Dimensions.get('window').width;
 const height = Dimensions.get('window').height;
 
@@ -18,7 +18,6 @@ interface OrderDetail {
     updated_by: string
     product_name: string,
     product_price: string
-
 }
 
 export function OrderDetail(props: any): JSX.Element {
@@ -36,51 +35,53 @@ export function OrderDetail(props: any): JSX.Element {
             })
             //let orderDetail:OrderDetail = res.json();    
         });
-    },[])
+    }, [])
+
+    async function orderDetailDelete(orderDetail: string){
+        await DeleteOrderDetail(orderDetail).then(() => {
+            datas?.forEach((d,i) => {
+                if (d.id == orderDetail) {
+                    let datass = datas.slice(0, i)
+                    setDatas(datass)
+                }
+            })
+        })
+    }
 
     const Item = ({ data }: { data: OrderDetail }) => (
+        <View
+            style={{
+                backgroundColor: '#eeeeee',
+                borderBottomEndRadius: 15,
+                borderTopEndRadius: 15,
+                borderColor: '#000000',
+                padding: 7,
+                marginTop: 10,
+                marginHorizontal: 4,
+                width: width,
+                shadowColor: "#000",
+                shadowOffset: {
+                    width: 0,
+                    height: 4,
+                },
+                shadowOpacity: 0.30,
+                shadowRadius: 4.65,
 
-        <TouchableOpacity onPress={() => {
-            console.log("TouchableOpacity : " + data.id)
-            console.log("ıtem : " + data.price)
-            //onPressItem(data)
-          /*   props.navigation.navigate("StockDetail", {
-                itemId: 86,
-                otherParam: 'anything you want here',
-                stock: data
-            }) */
-        }}>
-            {//data.id ? 
-                <View
-                    style={{
-                        backgroundColor: '#eeeeee',
-                        borderBottomEndRadius: 15,
-                        borderTopEndRadius: 15,
-                        borderColor: '#000000',
-                        padding: 7,
-                        marginTop: 10,
-                        marginHorizontal: 4,
-                        width: width,
-                        shadowColor: "#000",
-                        shadowOffset: {
-                            width: 0,
-                            height: 4,
-                        },
-                        shadowOpacity: 0.30,
-                        shadowRadius: 4.65,
+                elevation: 8,
+            }}>
 
-                        elevation: 8,
-                    }}>
+            <Text style={{ fontSize: 12, color: 'black' }}>Ürün Adı: {data.product_name}</Text>
+            <Text style={{ fontSize: 12, color: 'black' }}>Ürün Fiyatı: {data.product_price}</Text>
+            <View style={{ flex: 1, position: 'absolute', flexDirection: 'column', justifyContent: 'center', alignItems: 'flex-end', alignSelf: 'flex-end', alignContent: 'center' }}>
+                <Icon style={{ justifyContent: 'flex-end', alignItems: 'center', }} name="delete-forever" size={50} color="grey" 
+                onPress={() => {
+                    console.log("orderdetail screen delete : " + data.id)
+                    orderDetailDelete(data.id);
+                }} 
+                />
+            </View>
+        </View>
 
-                    <Text style={{ fontSize: 12, color: 'black' }}>Ürün Adı: {data.product_name}</Text>
-                    <Text style={{ fontSize: 12, color: 'black' }}>Ürün Fiyatı: {data.product_price}</Text>
-                    <View style={{ flex: 1, position: 'absolute', flexDirection: 'column', justifyContent: 'center', alignItems: 'flex-end', alignSelf: 'flex-end', alignContent: 'center' }}>
-                        <Icon style={{ justifyContent: 'flex-end', alignItems: 'center', }} name="chevron-right" size={50} color="grey" />
-                    </View>
-                </View>
-                //: null 
-            }
-        </TouchableOpacity>
     );
     return (
         <>

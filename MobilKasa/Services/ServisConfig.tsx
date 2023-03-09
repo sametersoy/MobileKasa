@@ -6,6 +6,8 @@ export const api_getProduct = '/Product/GetProducts?barcode=';
 
 export const api_getProductId = '/Product/GetProducts?productId=';
 
+export const api_getProductDetail = '/Product_Details/GetProduct_Details?productID=';
+
 export const api_addProduct = '/Product/AddProducts?barcode=';
 
 export const api_addPrice = '/Price/AddPrices?products_id=';
@@ -21,5 +23,8 @@ export const api_addOrder = '/Order/AddOrder?price=';
 export const api_addOrderDetails = '/OrderDetail/AddOrderDetail';
 
 export const api_getOrderDetail = '/OrderDetail/GetOrderDetail?orderId=';
+
+export const api_deleteOrderDetail = '/OrderDetail/DeleteOrderDetail?order_detail_id=';
+
 
 

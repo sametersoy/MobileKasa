@@ -112,6 +112,10 @@ function ShopScreen(props:any): JSX.Element {
 
   React.useEffect(() => {
    props.navigation.setOptions({
+  /*   headerStyle: {
+      backgroundColor: 'red',
+      color:'white'
+    }, */
       headerRight: () => (
         <Button onPress={() => {
           props.navigation.navigate("NewProduct");
@@ -171,6 +175,9 @@ function ShopScreen(props:any): JSX.Element {
 
   const [type, setType] = useState(RNCamera.Constants.Type.back);
   const cameraref = useRef(null);
+  let camerareaded=0;
+
+
 
   const [barcode, setBarcode] = useState("");
   const [toplam, setToplam] = useState(0.0);
@@ -272,14 +279,16 @@ function ShopScreen(props:any): JSX.Element {
 
   }
 
-  function ReadedBarcode(okunan: Barcode): string {
-    if (okunan) {
-      if (okunan.data != barcode) {
-        setBarcode(okunan.data);
-        servis(okunan.data);
-        console.log(okunan.data);
-      }
-    }
+  let lastreaded =Date.now();
+  function ReadedBarcode(okunan: Barcode, readTime:number): string {
+    let timesec=(readTime - lastreaded )
+          console.log("timesec: "+timesec+" readed : "+ readTime);
+          try {
+            if (timesec > 3000 ){
+              servis(okunan.data);
+              console.log("Servise giden barkod : " + okunan.data);
+          }
+          }catch(err) {}
     return "";
   }
 
@@ -337,8 +346,8 @@ function ShopScreen(props:any): JSX.Element {
         type={type}
         captureAudio={false}
         onGoogleVisionBarcodesDetected={({ barcodes }) => {
-          ReadedBarcode(barcodes[0])
-          //console.log(barcodes);
+          console.log(barcodes);
+          ReadedBarcode(barcodes[0],Date.now())
         }}
         googleVisionBarcodeMode={RNCamera.Constants.GoogleVisionBarcodeDetection.BarcodeMode.ALTERNATE}
       >
