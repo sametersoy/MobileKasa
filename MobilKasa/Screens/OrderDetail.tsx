@@ -87,8 +87,8 @@ export function OrderDetail(props: any): JSX.Element {
         <>
             <View style={styles.ordercontainer}>
             <Text style={{margin:10,fontSize:18,fontWeight:'bold', color:'black'}}>Satış No :{order.id}</Text>
-            <Text style={{margin:10,fontSize:18,fontWeight:'bold', color:'black'}}>Toplam :{order.price}</Text>
             <Text style={{margin:10,fontSize:18,fontWeight:'bold', color:'black'}}>Ürün Adeti :{order.piece}</Text>
+            <Text style={{margin:10,fontSize:18,fontWeight:'bold', color:'black'}}>Toplam :{order.price}</Text>
             </View>
             <FlatList
                 data={datas}
