@@ -21,12 +21,13 @@ import { CallMusicStart } from '../Components/TrackPlayer';
 import { GetProduct, ProductAdd } from '../Services/GetProduct';
 import { AddPrice } from '../Services/PriceServis';
 import { AddStock } from '../Services/StokServis';
-import { AddOrder, AddOrderDetails,IOrderDetail } from '../Services/OrderServis';
+import { AddOrder, AddOrderDetails, IOrderDetail } from '../Services/OrderServis';
 
 
 import { Modal } from 'react-native';
 import { generateUUID } from './StocksScreen';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import COLORS from '../Components/Colors';
 
 
 
@@ -108,14 +109,14 @@ const Products = [
 const Stack = createNativeStackNavigator();
 let readedcount = 0;
 
-function ShopScreen(props:any): JSX.Element {
+function ShopScreen(props: any): JSX.Element {
 
   React.useEffect(() => {
-   props.navigation.setOptions({
-  /*   headerStyle: {
-      backgroundColor: 'red',
-      color:'white'
-    }, */
+    props.navigation.setOptions({
+      /*   headerStyle: {
+          backgroundColor: 'red',
+          color:'white'
+        }, */
       headerRight: () => (
         <Button onPress={() => {
           props.navigation.navigate("NewProduct");
@@ -149,19 +150,28 @@ function ShopScreen(props:any): JSX.Element {
     await GetProduct(barcode).then((data) => {
       let g_price: any = "";
       let g_stock: any = "";
-      if (data.price != null && data.price != undefined) {
-        datas.push({ id: data.id, barcode: data.barcode, product_name: data.product_name, stock: data.stock, price: data.price, guid: generateUUID(10) });
+      if (data) {
+        if (data.price != null && data.price != undefined && data.price != "") {
+          datas.push({ id: data.id, barcode: data.barcode, product_name: data.product_name, stock: data.stock, price: data.price, guid: generateUUID(10) });
 
+        } else {
+          console.log('else nothing');
+          setModalBarcode(barcode)
+          setModalUrunAdi(data.product_name);
+          setisModalVisible(true)
+          datas.push({ id: data.id, barcode: data.barcode, product_name: data.product_name, stock: 0, price: 0, guid: generateUUID(10) });
+        }
+        setDatas(datas)
+        toplamHesapla(datas);
+        setLoading(false);
       } else {
-        console.log('else nothing');
-        datas.push({ id: data.id, barcode: data.barcode, product_name: data.product_name, stock: 0, price: 0, guid: generateUUID(10) });
+        setModalBarcode(barcode)
+        setisModalVisible(true)
       }
-      setDatas(datas)
-      toplamHesapla(datas);
-      setLoading(false);
+
+
     }).catch((error) => {
-      setModalBarcode(barcode)
-      setisModalVisible(true)
+
       console.log("error");
       console.error(error);
     });
@@ -175,7 +185,7 @@ function ShopScreen(props:any): JSX.Element {
 
   const [type, setType] = useState(RNCamera.Constants.Type.back);
   const cameraref = useRef(null);
-  let camerareaded=0;
+  let camerareaded = 0;
 
 
 
@@ -228,7 +238,7 @@ function ShopScreen(props:any): JSX.Element {
     datas.push({ id: prod_id, barcode: p_barcode, product_name: p_name, stock: p_stock, price: p_price, guid: generateUUID(10) });
     setDatas(datas)
     toplamHesapla(datas);
-    setLoading(true);
+    setLoading(false);
   }
 
   async function orderClick() {
@@ -244,22 +254,22 @@ function ShopScreen(props:any): JSX.Element {
     if (total_piece > 0) {
       await AddOrder(total_price, total_piece).then((res) => {
         console.log(res.id)
-        order_id=res.id
-        console.log("oRder ID : "+ order_id)
+        order_id = res.id
+        console.log("oRder ID : " + order_id)
       }).catch((error) => {
         console.log("orderClick shopscreen error");
         console.error(error);
       })
-  
-      if(order_id != 0){
-        let orderDetails:IOrderDetail[]=[]
+
+      if (order_id != 0) {
+        let orderDetails: IOrderDetail[] = []
 
         datas.forEach((order, index) => {
-          console.log("devam" );
-          if(order_id != undefined && order_id != 0){
-          let orderDetail:IOrderDetail={order_id:order_id,product_id:order.id,price:order.price}
+          console.log("devam");
+          if (order_id != undefined && order_id != 0) {
+            let orderDetail: IOrderDetail = { order_id: order_id, product_id: order.id, price: order.price }
             orderDetails.push(orderDetail)
-          console.log("orderdetail : "+orderDetail)
+            console.log("orderdetail : " + orderDetail)
           }
         })
         await AddOrderDetails(orderDetails).then((res) => {
@@ -279,16 +289,16 @@ function ShopScreen(props:any): JSX.Element {
 
   }
 
-  let lastreaded =Date.now();
-  function ReadedBarcode(okunan: Barcode, readTime:number): string {
-    let timesec=(readTime - lastreaded )
-          console.log("timesec: "+timesec+" readed : "+ readTime);
-          try {
-            if (timesec > 3000 ){
-              servis(okunan.data);
-              console.log("Servise giden barkod : " + okunan.data);
-          }
-          }catch(err) {}
+  let lastreaded = Date.now();
+  function ReadedBarcode(okunan: Barcode, readTime: number): string {
+    let timesec = (readTime - lastreaded)
+    //console.log("timesec: "+timesec+" readed : "+ readTime);
+    try {
+      if (timesec > 3000) {
+        servis(okunan.data);
+        console.log("Servise giden barkod : " + okunan.data);
+      }
+    } catch (err) { }
     return "";
   }
 
@@ -320,8 +330,8 @@ function ShopScreen(props:any): JSX.Element {
           <Text style={{ fontSize: 12, color: 'black' }}>Ürün: {data.product_name}</Text>
           <Text style={{ fontSize: 12, color: 'black' }}>Stok: {data.stock}</Text>
           <Text style={{ fontSize: 12, color: 'black' }}>Fiyat: {data.price}</Text>
-          <View style={{flex:1, position:'absolute', flexDirection:'column', justifyContent:'center', alignItems:'flex-end',alignSelf:'flex-end',alignContent:'center' }}>
-          <Icon style={{ justifyContent:'center', alignItems:'center', marginRight:15, marginTop:15  }} name="delete-outline" size={35} color="grey" />
+          <View style={{ flex: 1, position: 'absolute', flexDirection: 'column', justifyContent: 'center', alignItems: 'flex-end', alignSelf: 'flex-end', alignContent: 'center' }}>
+            <Icon style={{ justifyContent: 'center', alignItems: 'center', marginRight: 15, marginTop: 15 }} name="delete-outline" size={35} color="grey" />
           </View>
         </View>
         :
@@ -340,55 +350,41 @@ function ShopScreen(props:any): JSX.Element {
     </TouchableOpacity>
   );
   return (<SafeAreaView style={styles.container}>
-    <View style={styles.camcontainer} >
-      <RNCamera ref={cameraref}
-        style={styles.camera}
-        type={type}
-        captureAudio={false}
-        onGoogleVisionBarcodesDetected={({ barcodes }) => {
-          console.log(barcodes);
-          ReadedBarcode(barcodes[0],Date.now())
-        }}
-        googleVisionBarcodeMode={RNCamera.Constants.GoogleVisionBarcodeDetection.BarcodeMode.ALTERNATE}
-      >
-      </RNCamera>
-      <View>
-        <Button title='Satış' onPress={orderClick}></Button>
-        <Text style={styles.toplamText}>Toplam : {toplam}</Text>
-      </View>
-    </View>
-    <View style={{ flex: 1, marginTop: 20, marginBottom: 20 }}>
-      <FlatList
-        data={datas}
-        renderItem={({ item }) => <Item data={item} />}
-        keyExtractor={(item: IProduct) => item.guid}
-      />
+    <View>
       <Modal
-        animationType='fade'
+        animationType="slide"
+        transparent={true}
         visible={isModalVisible}
         onRequestClose={() => setisModalVisible(false)}
       >
-        <View><Text>Okunan Barkod Sistemde Bulunamamıştır. Lüfen Ürün Bilgilerini giriniz.</Text>
+        <View style={{
+          height: '55%',
+          marginTop: 'auto',
+          backgroundColor: COLORS.white,
+          borderTopLeftRadius: 20,
+          borderTopRightRadius: 20,
+
+        }}><Text style={{ margin: 10 }}>Okunan Barkod Sistemde Bulunamamıştır. Lüfen Ürün Bilgilerini giriniz.</Text>
           <TextInput
-            style={{ height: 45, backgroundColor: 'azure', margin: 20, fontSize: 20 }}
+            style={{ height: 40, backgroundColor: 'azure', margin: 2, fontSize: 18 }}
             placeholder="Barkod"
             value={modalBarcode}
             onChangeText={(text) => setModalBarcode(text)}
           ></TextInput>
           <TextInput
-            style={{ height: 45, backgroundColor: 'azure', margin: 20, fontSize: 20 }}
+            style={{ height: 40, backgroundColor: 'azure', margin: 2, fontSize: 18 }}
             placeholder="Ürün Adı"
             value={modalUrunAdi}
             onChangeText={(text) => setModalUrunAdi(text)}
           ></TextInput>
           <TextInput
-            style={{ height: 45, backgroundColor: 'azure', margin: 20, fontSize: 20 }}
+            style={{ height: 40, backgroundColor: 'azure', margin: 2, fontSize: 18 }}
             placeholder="Fiyat"
             value={modalPrice}
             onChangeText={(text) => setModalPrice(text)}
           ></TextInput>
           <TextInput
-            style={{ height: 45, backgroundColor: 'azure', margin: 20, fontSize: 20 }}
+            style={{ height: 40, backgroundColor: 'azure', margin: 2, fontSize: 18 }}
             placeholder="Stok"
             value={modalStock}
             onChangeText={(text) => setModalStock(text)}
@@ -397,6 +393,46 @@ function ShopScreen(props:any): JSX.Element {
 
         </View>
       </Modal>
+    </View>
+    <View style={styles.camcontainer} >
+      <RNCamera ref={cameraref}
+        style={styles.camera}
+        type={type}
+        captureAudio={false}
+        onGoogleVisionBarcodesDetected={({ barcodes }) => {
+          //console.log(barcodes);
+          ReadedBarcode(barcodes[0], Date.now())
+        }}
+        googleVisionBarcodeMode={RNCamera.Constants.GoogleVisionBarcodeDetection.BarcodeMode.ALTERNATE}
+      >
+      </RNCamera>
+      <View>
+        <View style={styles.btnOrder}>
+          <Button color={'blue'} title='Satış' onPress={orderClick}></Button>
+        </View>
+        <Text style={{
+          color: 'black',
+          fontSize: 20,
+          fontWeight: 'bold',
+         margin: 10,
+         width: '100%',
+          }}>Toplam : {toplam}</Text>
+        <Text style={{
+          color: 'black',
+          fontSize: 20,
+          fontWeight: 'bold',
+          width: '100%',
+          marginLeft:10,
+        }}>Adet : {datas.length}</Text>
+      </View>
+    </View>
+    <View style={{ flex: 1, marginTop: 20, marginBottom: 20 }}>
+      <FlatList
+        data={datas}
+        renderItem={({ item }) => <Item data={item} />}
+        keyExtractor={(item: IProduct) => item.guid}
+      />
+
       {loading ? (
         <View
           style={{
@@ -407,6 +443,7 @@ function ShopScreen(props:any): JSX.Element {
         </View>
       ) : null}
     </View>
+
   </SafeAreaView>);
 }
 
@@ -422,7 +459,7 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-start',
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
+    justifyContent: 'space-around',
   },
   camera: {
     //alignItems:'flex-end',
@@ -434,18 +471,26 @@ const styles = StyleSheet.create({
     //alignSelf: 'flex-start',
     //marginBottom: 0,
   },
-  toplamText: {
-    marginLeft: 10,
-    color: 'black',
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: -23,
-    justifyContent: 'flex-end',
-    alignItems: 'flex-end',
-    alignSelf: 'flex-end',
-    width: '100%'
-
-  },
+  /*  toplamText: {
+     marginLeft: 10,
+     color: 'black',
+     fontSize: 20,
+     fontWeight: 'bold',
+     marginBottom: -23,
+     justifyContent: 'flex-end',
+     alignItems: 'flex-end',
+     alignSelf: 'flex-end',
+     width: '100%'
+ 
+   }, */
+    btnOrder:{
+     position: 'absolute',
+     color: 'black',
+     fontSize: 20,
+     fontWeight: 'bold',
+     width: '180%',
+     marginTop:100
+   }, 
   item: {
     //marginTop: 100,
     backgroundColor: '#f9c2ff',

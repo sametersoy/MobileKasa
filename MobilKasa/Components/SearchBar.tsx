@@ -3,7 +3,13 @@ import React from "react";
 import { StyleSheet, TextInput, View, Keyboard, Button } from "react-native";
 import Icon from "react-native-vector-icons/MaterialIcons";
 
-const SearchBar = ({clicked, searchPhrase, setSearchPhrase, setCLicked}) => {
+interface Props {
+  clicked:any, searchPhrase:any, setSearchPhrase:any, setCLicked:any
+}
+
+const SearchBar: React.FC<Props> = ({clicked, searchPhrase, setSearchPhrase, setCLicked}) => {
+  console.log("click : "+clicked);
+  
   return (
     <View style={styles.container}>
       <View
@@ -27,12 +33,12 @@ const SearchBar = ({clicked, searchPhrase, setSearchPhrase, setCLicked}) => {
           value={searchPhrase}
           onChangeText={setSearchPhrase}
           onFocus={() => {
-            //setClicked(true);
+            setCLicked(true);
           }}
         />
         {/* cross Icon, depending on whether the search bar is clicked or not */}
         {clicked && (
-          <Icon name="cross" size={20} color="black" style={{ padding: 1 }} onPress={() => {
+          <Icon name="close" size={20} color="black" style={{ padding: 1 }} onPress={() => {
               setSearchPhrase("")
           }}/>
         )}
@@ -41,10 +47,11 @@ const SearchBar = ({clicked, searchPhrase, setSearchPhrase, setCLicked}) => {
       {clicked && (
         <View>
           <Button
+            style={{ margin: 10 }}
             title="Cancel"
             onPress={() => {
               Keyboard.dismiss();
-              //setClicked(false);
+              setCLicked(false);
             }}
           ></Button>
         </View>
@@ -61,7 +68,7 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     alignItems: "center",
     flexDirection: "row",
-    width: "100%",
+    width: "90%",
     height:65,
 
   },

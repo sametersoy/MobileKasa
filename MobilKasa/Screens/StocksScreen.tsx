@@ -46,6 +46,7 @@ const height = Dimensions.get('window').height;
 function StockScreen(props:any): JSX.Element {
     const [datas, setDatas] = useState([{}])
     const [loading, setLoading] = useState(false)
+    const [searchVisibility, setSearchVisibility] = useState(false)
 
     const [searchPhrase, setSearchPhrase] = useState("");
     const [clicked, setClicked] = useState(false);
@@ -54,9 +55,24 @@ function StockScreen(props:any): JSX.Element {
         servis(0);
         props.navigation.setOptions({
           headerRight: () => (
-            <Button onPress={() => {
-              props.navigation.navigate("NewProduct");
-            }} title="Yeni Ürün" />
+            <><Icon
+              name="search"
+              size={25}
+              color="black"
+              style={{ marginLeft: 20 }} 
+              onPress={() => {
+               searchVisibility ? setSearchVisibility(false):setSearchVisibility(true);
+              }} 
+              />
+              <Icon
+              name="create-new-folder"
+              size={25}
+              color="black"
+              style={{ marginLeft: 20 }} 
+              onPress={() => {
+                props.navigation.navigate("NewProduct");
+              }} 
+              /></>
           ),
         });
     }, []); 
@@ -144,10 +160,12 @@ function StockScreen(props:any): JSX.Element {
 
     return (
         <SafeAreaView>
+          {searchVisibility ?
           <SearchBar searchPhrase={searchPhrase}
         setSearchPhrase={setSearchPhrase}
         clicked={clicked}
         setCLicked={setClicked} />
+        :null}
         <FlatList
           data={datas}
           renderItem={({ item }) => (
