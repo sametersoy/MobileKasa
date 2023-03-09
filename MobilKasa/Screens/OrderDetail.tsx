@@ -1,5 +1,5 @@
 import react, { useEffect, useState } from 'react'
-import { Dimensions, FlatList, Text, TouchableOpacity, View } from 'react-native';
+import { Dimensions, FlatList, Text, TouchableOpacity,StyleSheet, View } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { GetProduct } from '../Services/GetProduct';
 import { DeleteOrderDetail, GetOrderDetail } from '../Services/OrderServis';
@@ -85,10 +85,11 @@ export function OrderDetail(props: any): JSX.Element {
     );
     return (
         <>
-            <Text>Order ID : {order.id}</Text>
-            <Text>Order Price : {order.price}</Text>
-            <Text>Order Piece : {order.piece}</Text>
-
+            <View style={styles.ordercontainer}>
+            <Text style={{margin:10,fontSize:18,fontWeight:'bold', color:'black'}}>Satış No :{order.id}</Text>
+            <Text style={{margin:10,fontSize:18,fontWeight:'bold', color:'black'}}>Toplam :{order.price}</Text>
+            <Text style={{margin:10,fontSize:18,fontWeight:'bold', color:'black'}}>Ürün Adeti :{order.piece}</Text>
+            </View>
             <FlatList
                 data={datas}
                 renderItem={({ item }) => (
@@ -103,3 +104,13 @@ export function OrderDetail(props: any): JSX.Element {
         </>
     )
 }
+const styles = StyleSheet.create({
+   
+    ordercontainer: {
+      alignSelf: 'center',
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-around',
+      
+    },
+  });
