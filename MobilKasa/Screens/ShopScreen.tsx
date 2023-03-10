@@ -25,9 +25,9 @@ import { AddOrder, AddOrderDetails, IOrderDetail } from '../Services/OrderServis
 
 
 import { Modal } from 'react-native';
-import { generateUUID } from './StocksScreen';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import COLORS from '../Components/Colors';
+import { generateUUID } from '../Components/GenerateGUID';
 
 
 
@@ -123,10 +123,9 @@ function ShopScreen(props: any): JSX.Element {
   let nettoplam: number = 0.0;
   function toplamHesapla(datas: IProduct[]) {
     console.log('Toplam Hesapla : ' + datas);
-    if (readedcount == 0) {
-      datas.splice(0, 1);
+    if(datas.length == 0) {
+      setToplam(0);
     }
-    readedcount = readedcount + 1;
     datas.forEach((element, index) => {
       nettoplam = nettoplam + parseFloat(element.price)
       console.log(nettoplam)
@@ -147,30 +146,35 @@ function ShopScreen(props: any): JSX.Element {
       let g_stock: any = "";
       if (data) {
         if (data.price != null && data.price != undefined && data.price != "") {
-          const dataProduct:IProduct = { 
+          const dataProduct: IProduct = {
             id: data.id,
             barcode: data.barcode,
             product_name: data.product_name,
             price: data.price,
             stock: data.stock,
             kdv: "",
-            guid: generateUUID(10) };
+            guid: generateUUID(10)
+          };
           datas?.push(dataProduct);
+          console.log('else nothing : ' +dataProduct.guid );
+
 
         } else {
           console.log('else nothing');
           setModalBarcode(barcode)
           setModalUrunAdi(data.product_name);
           setisModalVisible(true)
-          const dataProduct:IProduct = { 
+          const dataProduct: IProduct = {
             id: data.id,
             barcode: data.barcode,
             product_name: data.product_name,
             price: "0",
             stock: "0",
             kdv: "",
-            guid: generateUUID(10) };
-          
+            guid: generateUUID(10)
+          };
+          console.log('else nothing : ' +dataProduct.guid );
+
           datas?.push(dataProduct);
         }
         setDatas(datas)
@@ -189,9 +193,20 @@ function ShopScreen(props: any): JSX.Element {
     });
   }
 
-  async function onPressItem(product: IProduct): Promise<void> {
+  function onPressItem(product: IProduct): void {
     console.log("Tıklanan Ürün : " + product)
-    //setisModalVisible(true);
+    let n_data:IProduct[];
+    datas.forEach((d,index) => {
+      console.log("product.guid : " + product.guid)
+      console.log("data.guid : " + d.guid)
+
+      if (d.guid == product.guid) {
+        console.log("silinecek data : " + product.guid)
+        n_data=datas.filter(item => item.guid != product.guid);
+        toplamHesapla(n_data);
+        setDatas(n_data)
+      }
+    })
   }
 
 
@@ -247,15 +262,16 @@ function ShopScreen(props: any): JSX.Element {
       console.error(error);
     });
     setisModalVisible(false)
-    const data:IProduct = { 
+    const data: IProduct = {
       id: prod_id,
       barcode: p_barcode,
       product_name: p_name,
       price: p_price,
       stock: p_stock,
       kdv: "",
-      guid: generateUUID(10) };
-    
+      guid: generateUUID(10)
+    };
+
     datas?.push(data);
     setDatas(datas)
     toplamHesapla(datas);
@@ -432,18 +448,18 @@ function ShopScreen(props: any): JSX.Element {
           color: 'black',
           fontSize: 20,
           fontWeight: 'bold',
-         margin: 10,
-         width: '100%',
-          }}>Toplam : {toplam}</Text>
+          margin: 10,
+          width: '100%',
+        }}>Toplam : {toplam}</Text>
         <Text style={{
           color: 'black',
           fontSize: 20,
           fontWeight: 'bold',
           width: '100%',
-          marginLeft:10,
+          marginLeft: 10,
         }}>Adet : {datas.length}</Text>
-        <TouchableOpacity style={styles.btnOrder} onPress={orderClick}> 
-        <Text style={{fontSize: 20, fontWeight: 'bold',color:COLORS.white,alignItems:'center', alignSelf:'center', justifyContent:'center'}}>SATIŞ</Text>
+        <TouchableOpacity style={styles.btnOrder} onPress={orderClick}>
+          <Text style={{ fontSize: 20, fontWeight: 'bold', color: COLORS.white, alignItems: 'center', alignSelf: 'center', justifyContent: 'center' }}>SATIŞ</Text>
         </TouchableOpacity>
 
       </View>
@@ -505,21 +521,21 @@ const styles = StyleSheet.create({
      width: '100%'
  
    }, */
-   btnOrderView:{
+  btnOrderView: {
     //position: 'absolute',
     color: COLORS.blue,
     fontSize: 20,
     fontWeight: 'bold',
     //width: '180%',
-    
-   },
-    btnOrder:{
-     backgroundColor:'blue',
-     width: width-170,
-     height: 30,
-     borderRadius:10,
-     margin:10,
-   }, 
+
+  },
+  btnOrder: {
+    backgroundColor: 'blue',
+    width: width - 170,
+    height: 30,
+    borderRadius: 10,
+    margin: 10,
+  },
   item: {
     //marginTop: 100,
     backgroundColor: '#f9c2ff',

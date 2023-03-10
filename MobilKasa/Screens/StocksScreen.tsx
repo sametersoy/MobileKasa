@@ -18,15 +18,9 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import SearchBar from '../Components/SearchBar';
+import { generateUUID } from '../Components/GenerateGUID';
 
-export function generateUUID(digits:number) {
-  let str = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVXZ';
-  let uuid = [];
-  for (let i = 0; i < digits; i++) {
-      uuid.push(str[Math.floor(Math.random() * str.length)]);
-  }
-  return uuid.join('');
-}
+
 
 export interface IProduct {
     id: string;
