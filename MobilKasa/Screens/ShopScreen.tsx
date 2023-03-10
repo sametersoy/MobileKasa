@@ -407,9 +407,6 @@ function ShopScreen(props: any): JSX.Element {
       >
       </RNCamera>
       <View>
-        <View style={styles.btnOrder}>
-          <Button color={'blue'} title='Satış' onPress={orderClick}></Button>
-        </View>
         <Text style={{
           color: 'black',
           fontSize: 20,
@@ -424,6 +421,10 @@ function ShopScreen(props: any): JSX.Element {
           width: '100%',
           marginLeft:10,
         }}>Adet : {datas.length}</Text>
+        <TouchableOpacity style={styles.btnOrder} onPress={orderClick}> 
+        <Text style={{fontSize: 20, fontWeight: 'bold',color:COLORS.white,alignItems:'center', alignSelf:'center', justifyContent:'center'}}>SATIŞ</Text>
+        </TouchableOpacity>
+
       </View>
     </View>
     <View style={{ flex: 1, marginTop: 20, marginBottom: 20 }}>
@@ -483,13 +484,20 @@ const styles = StyleSheet.create({
      width: '100%'
  
    }, */
+   btnOrderView:{
+    //position: 'absolute',
+    color: COLORS.blue,
+    fontSize: 20,
+    fontWeight: 'bold',
+    //width: '180%',
+    
+   },
     btnOrder:{
-     position: 'absolute',
-     color: 'black',
-     fontSize: 20,
-     fontWeight: 'bold',
-     width: '180%',
-     marginTop:100
+     backgroundColor:'blue',
+     width: width-170,
+     height: 30,
+     borderRadius:10,
+     margin:10,
    }, 
   item: {
     //marginTop: 100,
