@@ -28,13 +28,22 @@ import { Modal } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import COLORS from '../Components/Colors';
 import { generateUUID } from '../Components/GenerateGUID';
+import Dropdown from '../Components/Dropdown';
 
 
 
 const width = Dimensions.get('window').width;
 const height = Dimensions.get('window').height;
 TrackPlayer.setupPlayer();
+const selectedData = [
+  { label: 'Kredi K.', value: 'Kredi K.' },
+  { label: 'Nakit', value: 'Nakit' },
+];
 
+interface ISelected {
+  label: string,
+  value: string
+}
 
 export interface Barcode {
 
@@ -123,7 +132,7 @@ function ShopScreen(props: any): JSX.Element {
   let nettoplam: number = 0.0;
   function toplamHesapla(datas: IProduct[]) {
     console.log('Toplam Hesapla : ' + datas);
-    if(datas.length == 0) {
+    if (datas.length == 0) {
       setToplam(0);
     }
     datas.forEach((element, index) => {
@@ -156,7 +165,7 @@ function ShopScreen(props: any): JSX.Element {
             guid: generateUUID(10)
           };
           datas?.push(dataProduct);
-          console.log('else nothing : ' +dataProduct.guid );
+          console.log('else nothing : ' + dataProduct.guid);
 
 
         } else {
@@ -173,7 +182,7 @@ function ShopScreen(props: any): JSX.Element {
             kdv: "",
             guid: generateUUID(10)
           };
-          console.log('else nothing : ' +dataProduct.guid );
+          console.log('else nothing : ' + dataProduct.guid);
 
           datas?.push(dataProduct);
         }
@@ -195,14 +204,14 @@ function ShopScreen(props: any): JSX.Element {
 
   function onPressItem(product: IProduct): void {
     console.log("Tıklanan Ürün : " + product)
-    let n_data:IProduct[];
-    datas.forEach((d,index) => {
+    let n_data: IProduct[];
+    datas.forEach((d, index) => {
       console.log("product.guid : " + product.guid)
       console.log("data.guid : " + d.guid)
 
       if (d.guid == product.guid) {
         console.log("silinecek data : " + product.guid)
-        n_data=datas.filter(item => item.guid != product.guid);
+        n_data = datas.filter(item => item.guid != product.guid);
         toplamHesapla(n_data);
         setDatas(n_data)
       }
@@ -226,6 +235,7 @@ function ShopScreen(props: any): JSX.Element {
   const [modalPrice, setModalPrice] = useState<string>("")
   const [modalStock, setModalStock] = useState<string>("0")
   const [loading, setLoading] = useState(false)
+  const [selected, setSelected] = useState<ISelected>({ label: "Nakit", value: "Nakit" });
 
   async function AddProduct(): Promise<void> {
     console.log("AddProduct: " + modalBarcode + " : " + modalUrunAdi + " : " + modalPrice)
@@ -444,20 +454,45 @@ function ShopScreen(props: any): JSX.Element {
       >
       </RNCamera>
       <View>
+      <View style={{  
+          alignItems: 'center', 
+          alignSelf: 'center', 
+          justifyContent: 'center',
+          backgroundColor: 'blue',
+          width: width - 170,
+          height: 30,
+          borderRadius: 10,
+          margin: 10,}}>
         <Text style={{
-          color: 'black',
-          fontSize: 20,
-          fontWeight: 'bold',
-          margin: 10,
-          width: '100%',
+            fontSize: 20, 
+            fontWeight: 'bold', 
+            color: COLORS.white, 
+            alignItems: 'center', 
+            alignSelf: 'center', 
+            justifyContent: 'center',
         }}>Toplam : {toplam}</Text>
+        </View>
+        <View style={{  
+          alignItems: 'center', 
+          alignSelf: 'center', 
+          justifyContent: 'center',
+          backgroundColor: 'blue',
+          width: width - 170,
+          height: 30,
+          borderRadius: 10,
+          }}>
         <Text style={{
-          color: 'black',
-          fontSize: 20,
-          fontWeight: 'bold',
-          width: '100%',
-          marginLeft: 10,
+          fontSize: 20, 
+          fontWeight: 'bold', 
+          color: COLORS.white, 
+          alignItems: 'center', 
+          alignSelf: 'center', 
+          justifyContent: 'center',
+        
         }}>Adet : {datas.length}</Text>
+        </View>
+     
+        <Dropdown label="Nakit" data={selectedData} onSelect={setSelected} />
         <TouchableOpacity style={styles.btnOrder} onPress={orderClick}>
           <Text style={{ fontSize: 20, fontWeight: 'bold', color: COLORS.white, alignItems: 'center', alignSelf: 'center', justifyContent: 'center' }}>SATIŞ</Text>
         </TouchableOpacity>
@@ -481,7 +516,6 @@ function ShopScreen(props: any): JSX.Element {
         </View>
       ) : null}
     </View>
-
   </SafeAreaView>);
 }
 
@@ -498,13 +532,16 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-around',
+    borderRadius: 50
   },
   camera: {
     //alignItems:'flex-end',
     //alignSelf: 'flex-end',
+    borderRadius: 50,
     marginLeft: 7,
     width: 150,
     height: 150,
+    alignSelf: 'stretch'
     //alignItems:'flex-start',
     //alignSelf: 'flex-start',
     //marginBottom: 0,
@@ -535,6 +572,8 @@ const styles = StyleSheet.create({
     height: 30,
     borderRadius: 10,
     margin: 10,
+
+
   },
   item: {
     //marginTop: 100,
