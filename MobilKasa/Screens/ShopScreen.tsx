@@ -100,12 +100,7 @@ export interface IProduct {
 
 }
 
-const Products = [
-  {
 
-  },
-
-];
 const Stack = createNativeStackNavigator();
 let readedcount = 0;
 
@@ -126,7 +121,7 @@ function ShopScreen(props: any): JSX.Element {
   }, [props.navigation]);
 
   let nettoplam: number = 0.0;
-  function toplamHesapla(datas: any[]) {
+  function toplamHesapla(datas: IProduct[]) {
     console.log('Toplam Hesapla : ' + datas);
     if (readedcount == 0) {
       datas.splice(0, 1);
@@ -152,14 +147,31 @@ function ShopScreen(props: any): JSX.Element {
       let g_stock: any = "";
       if (data) {
         if (data.price != null && data.price != undefined && data.price != "") {
-          datas.push({ id: data.id, barcode: data.barcode, product_name: data.product_name, stock: data.stock, price: data.price, guid: generateUUID(10) });
+          const dataProduct:IProduct = { 
+            id: data.id,
+            barcode: data.barcode,
+            product_name: data.product_name,
+            price: data.price,
+            stock: data.stock,
+            kdv: "",
+            guid: generateUUID(10) };
+          datas?.push(dataProduct);
 
         } else {
           console.log('else nothing');
           setModalBarcode(barcode)
           setModalUrunAdi(data.product_name);
           setisModalVisible(true)
-          datas.push({ id: data.id, barcode: data.barcode, product_name: data.product_name, stock: 0, price: 0, guid: generateUUID(10) });
+          const dataProduct:IProduct = { 
+            id: data.id,
+            barcode: data.barcode,
+            product_name: data.product_name,
+            price: "0",
+            stock: "0",
+            kdv: "",
+            guid: generateUUID(10) };
+          
+          datas?.push(dataProduct);
         }
         setDatas(datas)
         toplamHesapla(datas);
@@ -191,7 +203,7 @@ function ShopScreen(props: any): JSX.Element {
 
   const [barcode, setBarcode] = useState("");
   const [toplam, setToplam] = useState(0.0);
-  const [datas, setDatas] = useState(Products)
+  const [datas, setDatas] = useState<IProduct[]>([])
   const [isModalVisible, setisModalVisible] = useState(false)
 
   const [modalBarcode, setModalBarcode] = useState<string>("")
@@ -235,7 +247,16 @@ function ShopScreen(props: any): JSX.Element {
       console.error(error);
     });
     setisModalVisible(false)
-    datas.push({ id: prod_id, barcode: p_barcode, product_name: p_name, stock: p_stock, price: p_price, guid: generateUUID(10) });
+    const data:IProduct = { 
+      id: prod_id,
+      barcode: p_barcode,
+      product_name: p_name,
+      price: p_price,
+      stock: p_stock,
+      kdv: "",
+      guid: generateUUID(10) };
+    
+    datas?.push(data);
     setDatas(datas)
     toplamHesapla(datas);
     setLoading(false);
@@ -249,7 +270,7 @@ function ShopScreen(props: any): JSX.Element {
     let order_id: number = 0;
     datas.forEach((order, index) => {
       total_piece = total_piece + 1;
-      total_price = total_price + order.price
+      total_price = total_price + Number(order.price)
     })
     if (total_piece > 0) {
       await AddOrder(total_price, total_piece).then((res) => {
@@ -267,9 +288,9 @@ function ShopScreen(props: any): JSX.Element {
         datas.forEach((order, index) => {
           console.log("devam");
           if (order_id != undefined && order_id != 0) {
-            let orderDetail: IOrderDetail = { order_id: order_id, product_id: order.id, price: order.price }
+            let orderDetail: IOrderDetail = { order_id: order_id, product_id: Number(order.id), price: Number(order.price) }
             orderDetails.push(orderDetail)
-            console.log("orderdetail : " + orderDetail)
+            console.log("orderdetail shopscreen : " + orderDetail)
           }
         })
         await AddOrderDetails(orderDetails).then((res) => {
