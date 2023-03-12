@@ -91,5 +91,3 @@ export function StockDetail(props: any): JSX.Element {
         </>
     )
 }
-
-export default StockDetail

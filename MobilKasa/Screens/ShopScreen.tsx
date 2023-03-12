@@ -29,6 +29,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import COLORS from '../Components/Colors';
 import { generateUUID } from '../Components/GenerateGUID';
 import Dropdown from '../Components/Dropdown';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 
@@ -108,13 +109,13 @@ export interface IProduct {
   guid: string;
 
 }
+let CamStatus:any;
+let SoundStatus:string | null;
 
 
-const Stack = createNativeStackNavigator();
-let readedcount = 0;
 
 function ShopScreen(props: any): JSX.Element {
-
+  
   React.useEffect(() => {
     props.navigation.setOptions({
       /*   headerStyle: {
@@ -127,7 +128,7 @@ function ShopScreen(props: any): JSX.Element {
         }} title="Yeni Ürün" />
       ),
     });
-  }, [props.navigation]);
+  }, [props.navigation,]);
 
   let nettoplam: number = 0.0;
   function toplamHesapla(datas: IProduct[]) {
@@ -149,7 +150,9 @@ function ShopScreen(props: any): JSX.Element {
   async function servis(barcode: string): Promise<void> {
     console.log("Okunan Bardoce : " + barcode)
     setLoading(true);
-    CallMusicStart();
+    if(SoundStatus == "A"){
+      CallMusicStart();
+    }
     await GetProduct(barcode).then((data) => {
       let g_price: any = "";
       let g_stock: any = "";
@@ -218,13 +221,9 @@ function ShopScreen(props: any): JSX.Element {
     })
   }
 
-
-  const [type, setType] = useState(RNCamera.Constants.Type.back);
+  const [type, setType] = useState(CamStatus);
   const cameraref = useRef(null);
-  let camerareaded = 0;
-
-
-
+  
   const [barcode, setBarcode] = useState("");
   const [toplam, setToplam] = useState(0.0);
   const [datas, setDatas] = useState<IProduct[]>([])
@@ -236,7 +235,25 @@ function ShopScreen(props: any): JSX.Element {
   const [modalStock, setModalStock] = useState<string>("0")
   const [loading, setLoading] = useState(false)
   const [selected, setSelected] = useState<ISelected>({ label: "Nakit", value: "Nakit" });
+  
+  async function CamSetControl(){
+    let CamSetting= await AsyncStorage.getItem('CamSetting');
+     if(CamSetting == 'B'){
+     console.log('CamSetControl shop screen : '+CamSetting);
+     CamStatus = RNCamera.Constants.Type.back
+     }
+     if(CamSetting == 'F'){
+       console.log('CamSetControl shop screen : '+CamSetting);
+       CamStatus = RNCamera.Constants.Type.front
+     }
+     setType(CamStatus)
+   }
+   CamSetControl() 
 
+   async function SoundSetControl(){
+    SoundStatus = await AsyncStorage.getItem('SoundSetting');
+   }
+   SoundSetControl() 
   async function AddProduct(): Promise<void> {
     console.log("AddProduct: " + modalBarcode + " : " + modalUrunAdi + " : " + modalPrice)
     setLoading(true);

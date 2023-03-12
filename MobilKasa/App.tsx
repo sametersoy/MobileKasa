@@ -9,10 +9,36 @@ import SettingScreen from './Screens/SettingScreen';
 import { Button } from 'react-native';
 import NewProduct from './Screens/NewProduct';
 import { OrderDetail } from './Screens/OrderDetail';
-import StockDetail from './Screens/StockDetail';
+import {StockDetail} from './Screens/StockDetail';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 
+async function CamSetControl(){
+ let CamSetting= await AsyncStorage.getItem('CamSetting');
+  if(CamSetting != null){
+  console.log('camSetting : '+CamSetting);
+  
+  }
+  else{
+    console.log('camSetting else : '+CamSetting);
+    AsyncStorage.setItem('CamSetting', 'B');
+  }
+}
+CamSetControl()
+
+async function SoundSetControl(){
+  let SoundSetting= await AsyncStorage.getItem('SoundSetting');
+   if(SoundSetting != null){
+   console.log('SoundSetting : '+SoundSetting);
+   
+   }
+   else{
+     console.log('SoundSetControl else : '+SoundSetting);
+     AsyncStorage.setItem('SoundSetting', 'A');
+   }
+ }
+ SoundSetControl()
 
 const Stack = createNativeStackNavigator();
 
