@@ -49,7 +49,7 @@ export function AddOrder(price: number, piece:number): Promise<any> {
   }
 
   export function GetOrderDetail(orderId:string): Promise<any> {
-    console.log("GetOrderDetail servis"+api_getOrderDetail);
+    console.log("GetOrderDetail servis :"+api_getOrderDetail+orderId);
     var data = fetch(base_url+api_getOrderDetail + orderId, {
       method: "GET",
       headers: { "Content-type": "application/json" },
