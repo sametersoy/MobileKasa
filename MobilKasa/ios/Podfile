@@ -1,8 +1,6 @@
 require_relative '../node_modules/react-native/scripts/react_native_pods'
 require_relative '../node_modules/@react-native-community/cli-platform-ios/native_modules'
-pod 'react-native-camera', path: '../node_modules/react-native-camera', subspecs: [
-'BarcodeDetectorMLKit'
-]
+
 platform :ios, min_ios_version_supported
 prepare_react_native_project!
 
@@ -45,7 +43,9 @@ target 'MobilKasa' do
     # An absolute path to your application root.
     :app_path => "#{Pod::Config.instance.installation_root}/.."
   )
-
+  pod 'react-native-camera', path: '../node_modules/react-native-camera', subspecs: [
+    'BarcodeDetectorMLKit'
+    ]
   target 'MobilKasaTests' do
     inherit! :complete
     # Pods for testing
