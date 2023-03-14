@@ -10,11 +10,15 @@ export const api_getProductDetail = '/Product_Details/GetProduct_Details?product
 
 export const api_addProduct = '/Product/AddProducts?barcode=';
 
-export const api_addPrice = '/Price/AddPrices?products_id=';
-
 export const api_paging = '/Product/GetProducts_Paging?page_count=';
 
+
+export const api_addPrice = '/Price/AddPrices?products_id=';
+
+export const api_getPrice = '/Price/GetPrice?product_id=';
+
 export const api_addStock = '/Stock/AddStock?product_id=';
+
 
 export const api_GetOrder = '/Order/GetOrder';
 

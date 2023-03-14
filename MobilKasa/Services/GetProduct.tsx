@@ -1,25 +1,12 @@
 import React from "react";
 import { InteractionManager } from "react-native/types";
-import {base_url,api_getProduct, api_addProduct, api_addPrice, api_paging, api_getProductId} from "./ServisConfig"
-
-interface IServis {
-    id: string;
-    barcode: string;
-    product_name: string;
-    price: string;
-    stock: string;
-  }
-
-  type IServiss = [{
-    id: string;
-    barcode: string;
-    product_name: string;
-    price: string;
-    stock: string;
-}]
+import { IProduct } from "../Models/IProduct";
+import {base_url,api_getProduct, api_addProduct, api_addPrice, api_paging, api_getProductId, api_getProductDetail} from "./ServisConfig"
 
 
-  export function GetPaging(page_count: number): Promise<IServiss> {
+
+
+  export function GetPaging(page_count: number): Promise<IProduct[]> {
     var data = fetch(base_url+api_paging + page_count, {
       method: "GET",
       headers: { "Content-type": "application/json" }
@@ -31,7 +18,7 @@ interface IServis {
     return data;
   }
 
-  export function GetProduct(barcode: string): Promise<IServis> {
+  export function GetProduct(barcode: string): Promise<IProduct> {
     var data = fetch(base_url+api_getProduct + barcode, {
       method: "GET",
       headers: { "Content-type": "application/json" }
@@ -42,7 +29,20 @@ interface IServis {
     });
     return data;
   }
-  export function GetProductId(productId: string): Promise<IServis> {
+
+  export function GetProductDetail(productId: string): Promise<IProduct> {
+    var data = fetch(base_url+api_getProductDetail + productId, {
+      method: "GET",
+      headers: { "Content-type": "application/json" }
+    }).then((response) => response.json()).then((json) => {
+      return json;
+    }).catch((error) => {
+      console.log("GetProduct Service Error: " + error);
+    });
+    return data;
+  }
+
+  export function GetProductId(productId: string): Promise<IProduct> {
     var data = fetch(base_url+api_getProductId + productId, {
       method: "GET",
       headers: { "Content-type": "application/json" }
