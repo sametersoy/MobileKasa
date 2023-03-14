@@ -2,21 +2,7 @@ import React from "react";
 import { InteractionManager } from "react-native/types";
 import {base_url,api_getProduct, api_addProduct, api_addPrice,api_addStock, api_paging, api_getPrice} from "./ServisConfig"
 
-interface IServis {
-    id: string;
-    barcode: string;
-    product_name: string;
-    price: string;
-    stock: string;
-  }
 
-  type IServiss = [{
-    id: string;
-    barcode: string;
-    product_name: string;
-    price: string;
-    stock: string;
-}]
 
 export function GetPrices(products_id: string): Promise<any> {
   console.log("GetPrices"+products_id);

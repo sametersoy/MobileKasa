@@ -19,19 +19,7 @@ import {
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import SearchBar from '../Components/SearchBar';
 import { generateUUID } from '../Components/GenerateGUID';
-
-
-
-export interface IProduct {
-    id: string;
-    barcode: string;
-    product_name: string;
-    price: string;
-    stock: string;
-    kdv: string;
-    guid: string;
-}
-
+import { IProduct } from '../Models/IProduct';
 
 
 const width = Dimensions.get('window').width;
@@ -169,7 +157,6 @@ function StockScreen(props:any): JSX.Element {
           onEndReached={getMoreProduct}
           onEndReachedThreshold={0.2}
           ListFooterComponent={footerIndicator}
-
         />
       </SafeAreaView >
     );

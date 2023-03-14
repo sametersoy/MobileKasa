@@ -4,6 +4,7 @@ import COLORS from './Colors';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 interface Props {
+  value:string
   placeholder:string
   label:string
   iconName: string
@@ -15,6 +16,7 @@ interface Props {
 }
 
 const Input: FC<Props> = ({
+  value,
   label,
   iconName,
   error,
@@ -44,6 +46,7 @@ const Input: FC<Props> = ({
           style={{color: COLORS.darkBlue, fontSize: 22, marginRight: 10}}
         />
         <TextInput
+          value={value}
           autoCorrect={false}
           onFocus={() => {
             onFocus();

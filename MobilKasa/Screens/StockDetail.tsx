@@ -1,5 +1,5 @@
 import react, { useEffect, useState } from 'react'
-import { Dimensions, FlatList, Text, TouchableOpacity, View } from 'react-native';
+import { Dimensions, FlatList, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { getParsedDate } from '../Components/ParseDate';
 import { IPrices } from '../Models/IPrice';
@@ -59,8 +59,9 @@ export function StockDetail(props: any): JSX.Element {
                 borderTopEndRadius: 15,
                 borderColor: '#000000',
                 padding: 7,
-                margin:10,
-                marginHorizontal: 4,
+                margin:7,
+                marginBottom:1,
+                //marginHorizontal: 4,
                 width: width,
                 shadowColor: "#000",
                 shadowOffset: {
@@ -87,8 +88,8 @@ export function StockDetail(props: any): JSX.Element {
     );
    
     return (
-        <View>
-            <View style={{margin:15}}>
+        <SafeAreaView style={styles.container}>
+            <View style={{margin:10}}>
             <Text>Ürün ID : {stock.id}</Text>
             <Text>ürün Adı : {stock.product_name}</Text>
             <Text>Barkod : {stock.barcode}</Text>
@@ -102,17 +103,28 @@ export function StockDetail(props: any): JSX.Element {
             <Text style={{ fontSize: 14, color: 'black' }}>SKK: {datas?.expiration_date ? getParsedDate(datas?.expiration_date):null}</Text>
             <Text style={{ fontSize: 14, color: 'black' }}>Üretim Tarihi: {datas?.production_date ? getParsedDate(datas?.production_date):null}</Text>
 
-
+            <Text style={{ color:'black', fontSize:16, marginTop:15}}>Fiyatlar </Text>
+           
             </View>
-            <Text style={{ color:'black', fontSize:16, marginLeft:10, marginTop:15}}>Fiyatlar </Text>
             <FlatList
                 data={prices}
                 renderItem={({ item }) => (
                     <Item data={item} />
                 )}
+                scrollEnabled={true}
             />
-        </View>
-    )
-}
+            </SafeAreaView>
 
+    )
+   
+}
+const styles = StyleSheet.create({
+    container: {
+        flex:1,
+      flexDirection: 'column',
+      //backgroundColor: 'grey',
+      //alignItems: 'center'
+      //justifyContent: 'flex-end',
+    },
+})
 

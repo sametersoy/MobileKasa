@@ -8,6 +8,7 @@ import {
     ScrollView,
     Alert,
     TouchableOpacity,
+    TextInput,
 
 } from 'react-native';
 
@@ -15,12 +16,12 @@ import COLORS from '../Components/Colors';
 import Button from '../Components/Button';
 import Input from '../Components/Input';
 import Loader from '../Components/Loader';
-import { ProductAdd } from '../Services/GetProduct';
+import { ProductAdd, UpdateProduct } from '../Services/GetProduct';
 import { AddPrice } from '../Services/PriceServis';
 import { AddStock } from '../Services/StokServis';
 import { IProduct } from '../Models/IProduct';
-import { Prices } from '../Models/IPrice';
-import { StockDetail } from '../Models/IProductDetail';
+import { IPrices } from '../Models/IPrice';
+import { IProductDetail } from '../Models/IProductDetail';
 interface Props {
     error: any
     iconName: string
@@ -45,8 +46,8 @@ export function ProductEdit(props: any): JSX.Element {
     });
     const [loading, setLoading] = React.useState(false);
     const [product, setProduct] = useState<IProduct>(props.route.params.stock)
-    const [product_detail, setProduct_Detail] = useState<StockDetail>(props.route.params.datas)
-    const [prices, setPricess] = useState<Prices[]>(props.route.params.prices)
+    const [product_detail, setProduct_Detail] = useState<IProductDetail>(props.route.params.datas)
+    const [prices, setPricess] = useState<IPrices[]>(props.route.params.prices)
     console.log('Product Edit : '+ product.barcode);
 
    async function register() {
@@ -59,42 +60,40 @@ export function ProductEdit(props: any): JSX.Element {
                 Alert.alert('Error', 'Something went wrong');
             }
         }, 3000);*/
-        let prod_id: string = "";
-        let added_product: string = "";
-        let p_barcode: string = "";
-        let p_name: string = "";
-        let p_price: string = "";
-        let p_stock: string = "";
+
         console.log("1 : "+inputs.barcode);
         
-        await ProductAdd(inputs.barcode, inputs.productname).then((data) => {
-          console.log("Newproduct Screen AddProduct: " + data.id)
-          prod_id = data.id;
-          added_product = data.barcode;
-          p_barcode = data.barcode;
-          p_name = data.product_name;
+        await UpdateProduct(product).then((data) => {
+          console.log("productEdit Screen UpdateProduct: " + data.id)
+          setProduct(data)
     
         }).catch((error) => {
-          console.log("Newproduct Screen AddProduct error");
+          console.log("productEdit Screen AddProduct error");
           console.error(error);
         });
    
-        await AddPrice(prod_id, inputs.price).then((price) => {
-          console.log("Newproduct Screen AddPrice: " + price.id)
-          p_price = price.price;
+         await AddPrice(product.id, product.price).then((price) => {
+          console.log("productEdit Screen AddPrice: " + price.id)
+          
+          setProduct(product => ({
+            ...product,
+            price:price.price
+          }))
+          console.log("productEdit Screen n_data: " + product.price)
+
         }).catch((error) => {
-          console.log("Newproduct Screen AddPrice error");
+          console.log("productEdit Screen AddPrice error");
           console.error(error);
-        });
-        await AddStock(prod_id, inputs.stock).then((stok) => {
-          console.log("Newproduct Screen AddStock: " + stok.id)
+        }); 
+       /*  await AddStock(prod_id, inputs.stock).then((stok) => {
+          console.log("productEdit Screen AddStock: " + stok.id)
           p_stock = stok.piece;
         }).catch((error) => {
-          console.log("Newproduct Screen AddStock error");
+          console.log("productEdit Screen AddStock error");
           console.error(error);
-        });
-        Alert.alert('İşlem Başarılı', 'Ürün Başarı ile Kayıt Edildi.');
-        handleOnchange("", 'barcode')
+        }); */
+        Alert.alert('İşlem Başarılı', 'Ürün Başarı ile Güncelledi');
+       /*  handleOnchange("", 'barcode')
         handleOnchange("", 'productname')
         handleOnchange(0, 'price')
         handleOnchange(0, 'stock')
@@ -109,7 +108,7 @@ export function ProductEdit(props: any): JSX.Element {
             productname: '',
             price: '',
             stock: '',
-        })
+        }) */
         //props.navigation.navigate('Main');
 
 
@@ -117,7 +116,7 @@ export function ProductEdit(props: any): JSX.Element {
     };
 
     const handleOnchange = (text: any, input: string) => {
-        setInputs(prevState => ({ ...prevState, [input]: text }));
+        setProduct(prevState => ({ ...prevState, [input]: text }));
     };
     const handleError = (error: string | null, input: string) => {
         setErrors(prevState => ({ ...prevState, [input]: error }));
@@ -141,25 +140,26 @@ export function ProductEdit(props: any): JSX.Element {
                     error={errors.barcode}
                     columnTitle={''}
                     password={undefined}
-                    value={product.barcode.toString()}
+                    value={product.barcode}
                     onChangeText={function (text: any): void {
                         console.log("onChangeText : " + text)
+                        
                         handleOnchange(text, 'barcode')
-                    }}
+                    }} 
                 />
                 <Input
-                    onFocus={() => handleError(null, 'productname')}
+                    onFocus={() => handleError(null, 'product_name')}
                     iconName="drive-file-rename-outline"
                     label="Ürün Adı"
                     placeholder="Ürün Adı Giriniz"
                     error={errors.productname}
                     columnTitle={''}
                     password={undefined}
-                    value={product.product_name.toString()}
+                    value={product.product_name}
                     onChangeText={function (text: any): void {
                         console.log("onChangeText : " + text)
-                        handleOnchange(text, 'productname')
-                    }}
+                        handleOnchange(text, 'product_name')
+                    }} 
                 />
                 <Input
                     onFocus={() => handleError(null, 'price')}
@@ -169,7 +169,7 @@ export function ProductEdit(props: any): JSX.Element {
                     error={errors.price}
                     columnTitle={''}
                     password={undefined}
-                    value={product?.price}
+                    value={product.price?.toString()}
                     onChangeText={function (text: any): void {
                         console.log("onChangeText : " + text)
                         handleOnchange(text, 'price')
@@ -191,8 +191,8 @@ export function ProductEdit(props: any): JSX.Element {
                 />
                 <TouchableOpacity
                     onPress={() => {
-                        console.log("Kaydet Test : "+JSON.stringify(inputs));
                         register();
+                        console.log("Kaydet Test : "+JSON.stringify(product));
                     }}
                     activeOpacity={0.7}
                     style={{

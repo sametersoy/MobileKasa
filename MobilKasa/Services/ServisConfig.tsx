@@ -1,6 +1,6 @@
-export const base_url = 'http://market.yonetimim.com'
+//export const base_url = 'http://market.yonetimim.com'
 
-//export const base_url = 'http://192.168.1.155:5001';
+export const base_url = 'http://192.168.1.155:5001';
 
 export const api_getProduct = '/Product/GetProducts?barcode=';
 
@@ -9,6 +9,8 @@ export const api_getProductId = '/Product/GetProducts?productId=';
 export const api_getProductDetail = '/Product_Details/GetProduct_Details?productID=';
 
 export const api_addProduct = '/Product/AddProducts?barcode=';
+
+export const api_updateProduct = '/Product/UpdateProducts';
 
 export const api_paging = '/Product/GetProducts_Paging?page_count=';
 

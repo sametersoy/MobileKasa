@@ -1,7 +1,7 @@
 import React from "react";
 import { InteractionManager } from "react-native/types";
 import { IProduct } from "../Models/IProduct";
-import {base_url,api_getProduct, api_addProduct, api_addPrice, api_paging, api_getProductId, api_getProductDetail} from "./ServisConfig"
+import {base_url,api_getProduct, api_addProduct, api_addPrice, api_paging, api_getProductId, api_getProductDetail, api_updateProduct} from "./ServisConfig"
 
 
 
@@ -50,6 +50,20 @@ import {base_url,api_getProduct, api_addProduct, api_addPrice, api_paging, api_g
       return json[0];
     }).catch((error) => {
       console.log("GetProductId Service Error: " + error);
+    });
+    return data;
+  }
+
+  export function UpdateProduct(product:IProduct): Promise<any> {
+    console.log("UpdateProduct servis"+api_updateProduct);
+    var data = fetch(base_url+api_updateProduct, {
+      method: "POST",
+      headers: { "Content-type": "application/json" },
+      body: JSON.stringify(product),
+      }).then((response) => response.json()).then((json) => {
+      return json;
+    }).catch((error) => {
+      console.log("UpdateProduct Service Error: " + error);
     });
     return data;
   }

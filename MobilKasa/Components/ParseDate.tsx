@@ -1,4 +1,4 @@
-export function getParsedDate(strDate:Date){
+export function getParsedDate(strDate:Date | string){
     var strSplitDate = String(strDate).split(' ');
     var date = new Date(strSplitDate[0]);
     // alert(date);
