@@ -5,21 +5,12 @@ import { GetOrder } from '../Services/OrderServis';
 import { generateUUID } from '../Components/GenerateGUID';
 import { getParsedDate } from '../Components/ParseDate';
 import  Icon  from 'react-native-vector-icons/MaterialIcons';
+import { IProduct } from '../Models/IProduct';
 
 
 const width = Dimensions.get('window').width;
 const height = Dimensions.get('window').height;
-export interface IProduct {
-    id: string;
-    barcode: string;
-    product_name: string;
-    price: string;
-    stock: string;
-    kdv: string;
-    guid: string;
-    piece:string;
-    created_date:Date;
-}
+
 
 function OrderScreen(props:any): JSX.Element {
     const [datas, setDatas] = useState([{}])

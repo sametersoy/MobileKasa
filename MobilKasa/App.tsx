@@ -11,6 +11,7 @@ import NewProduct from './Screens/NewProduct';
 import { OrderDetail } from './Screens/OrderDetail';
 import {StockDetail} from './Screens/StockDetail';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import ProductEdit from './Screens/ProductEdit';
 
 
 
@@ -55,6 +56,7 @@ function  App(): JSX.Element {
         <Stack.Screen name="NewProduct" component={NewProduct} options={{ title: 'Yeni Ürün' }} ></Stack.Screen>
         <Stack.Screen name="OrderDetail" component={OrderDetail} options={{ title: 'Satış Detay' }} ></Stack.Screen>
         <Stack.Screen name="StockDetail" component={StockDetail} options={{ title: 'Stok Detay' }} ></Stack.Screen>
+        <Stack.Screen name="ProductEdit" component={ProductEdit} options={{ title: 'Ürün Güncelle' }} ></Stack.Screen>
       </Stack.Navigator>
     </NavigationContainer>   
   );
