@@ -9,7 +9,7 @@ interface Props {
   label:string
   iconName: string
   columnTitle: string
-  error: any
+  error?: any
   password:any
   onFocus:()=>void
   onChangeText:(text: any)=>void
@@ -27,7 +27,7 @@ const Input: FC<Props> = ({
   const [hidePassword, setHidePassword] = React.useState(password);
   const [isFocused, setIsFocused] = React.useState(false);
   return (
-    <View style={{marginBottom: 20}}>
+    <View style={{marginBottom: 7}}>
       <Text style={style.label}>{label}</Text>
       <View
         style={[
@@ -77,15 +77,15 @@ const Input: FC<Props> = ({
 const style = StyleSheet.create({
   label: {
     marginVertical: 5,
-    fontSize: 14,
+    fontSize: 12,
     color: COLORS.grey,
   },
   inputContainer: {
-    height: 55,
+    //height: 45,
     backgroundColor: COLORS.light,
     flexDirection: 'row',
     paddingHorizontal: 15,
-    borderWidth: 0.5,
+    borderWidth: 0.3,
   },
 });
 

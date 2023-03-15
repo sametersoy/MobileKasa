@@ -30,6 +30,9 @@ import COLORS from '../Components/Colors';
 import { generateUUID } from '../Components/GenerateGUID';
 import Dropdown from '../Components/Dropdown';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { IProduct } from '../Models/IProduct';
+import { IBarcode } from '../Models/IBarcode';
+import Input from '../Components/Input';
 
 
 
@@ -46,76 +49,15 @@ interface ISelected {
   value: string
 }
 
-export interface Barcode {
 
-  data: string;
-  dataRaw: string;
-  format?: string;
-  addresses?: {
-    addressesType?: 'UNKNOWN' | 'Work' | 'Home';
-    addressLines?: string[];
-  }[];
 
-  urls?: string[];
-  name?: {
-    firstName?: string;
-    lastName?: string;
-    middleName?: string;
-    prefix?: string;
-    pronounciation?: string;
-    suffix?: string;
-    formattedName?: string;
-  };
-  organization?: string;
-  latitude?: number;
-  longitude?: number;
-  ssid?: string;
-  password?: string;
-  encryptionType?: string;
-  title?: string;
-  url?: string;
-  firstName?: string;
-  middleName?: string;
-  lastName?: string;
-  gender?: string;
-  addressCity?: string;
-  addressState?: string;
-  addressStreet?: string;
-  addressZip?: string;
-  birthDate?: string;
-  documentType?: string;
-  licenseNumber?: string;
-  expiryDate?: string;
-  issuingDate?: string;
-  issuingCountry?: string;
-  eventDescription?: string;
-  location?: string;
-  organizer?: string;
-  status?: string;
-  summary?: string;
-  start?: string;
-  end?: string;
-  phoneNumber?: string;
-  message?: string;
-}
-
-export interface IProduct {
-  id: string;
-  barcode: string;
-  product_name: string;
-  price: string;
-  stock: string;
-  kdv: string;
-  guid: string;
-
-}
-let CamStatus:any;
-let SoundStatus:string | null;
+let CamStatus: any;
+let SoundStatus: string | null;
 
 
 
 function ShopScreen(props: any): JSX.Element {
-  
+
   React.useEffect(() => {
     props.navigation.setOptions({
       /*   headerStyle: {
@@ -150,7 +92,7 @@ function ShopScreen(props: any): JSX.Element {
   async function servis(barcode: string): Promise<void> {
     console.log("Okunan Bardoce : " + barcode)
     setLoading(true);
-    if(SoundStatus == "A"){
+    if (SoundStatus == "A") {
       CallMusicStart();
     }
     await GetProduct(barcode).then((data) => {
@@ -223,37 +165,37 @@ function ShopScreen(props: any): JSX.Element {
 
   const [type, setType] = useState(CamStatus);
   const cameraref = useRef(null);
-  
+
   const [barcode, setBarcode] = useState("");
   const [toplam, setToplam] = useState(0.0);
   const [datas, setDatas] = useState<IProduct[]>([])
-  const [isModalVisible, setisModalVisible] = useState(false)
+  const [isModalVisible, setisModalVisible] = useState(true)
 
   const [modalBarcode, setModalBarcode] = useState<string>("")
   const [modalUrunAdi, setModalUrunAdi] = useState<string>("")
-  const [modalPrice, setModalPrice] = useState<string>("")
+  const [modalPrice, setModalPrice] = useState<string>("0")
   const [modalStock, setModalStock] = useState<string>("0")
   const [loading, setLoading] = useState(false)
   const [selected, setSelected] = useState<ISelected>({ label: "Nakit", value: "Nakit" });
-  
-  async function CamSetControl(){
-    let CamSetting= await AsyncStorage.getItem('CamSetting');
-     if(CamSetting == 'B'){
-     console.log('CamSetControl shop screen : '+CamSetting);
-     CamStatus = RNCamera.Constants.Type.back
-     }
-     if(CamSetting == 'F'){
-       console.log('CamSetControl shop screen : '+CamSetting);
-       CamStatus = RNCamera.Constants.Type.front
-     }
-     setType(CamStatus)
-   }
-   CamSetControl() 
 
-   async function SoundSetControl(){
+  async function CamSetControl() {
+    let CamSetting = await AsyncStorage.getItem('CamSetting');
+    if (CamSetting == 'B') {
+      console.log('CamSetControl shop screen : ' + CamSetting);
+      CamStatus = RNCamera.Constants.Type.back
+    }
+    if (CamSetting == 'F') {
+      console.log('CamSetControl shop screen : ' + CamSetting);
+      CamStatus = RNCamera.Constants.Type.front
+    }
+    setType(CamStatus)
+  }
+  CamSetControl()
+
+  async function SoundSetControl() {
     SoundStatus = await AsyncStorage.getItem('SoundSetting');
-   }
-   SoundSetControl() 
+  }
+  SoundSetControl()
   async function AddProduct(): Promise<void> {
     console.log("AddProduct: " + modalBarcode + " : " + modalUrunAdi + " : " + modalPrice)
     setLoading(true);
@@ -352,9 +294,16 @@ function ShopScreen(props: any): JSX.Element {
 
 
   }
+  const handleOnchange = (text: any, input: string) => {
+    //setModalBarcode(prevState => ({ ...prevState, [input]: text }));
+    //setModalBarcode(text)
 
+  };
+  const handleError = (error: string | null, input: string) => {
+    //setErrors(prevState => ({ ...prevState, [input]: error }));
+  };
   let lastreaded = Date.now();
-  function ReadedBarcode(okunan: Barcode, readTime: number): string {
+  function ReadedBarcode(okunan: IBarcode, readTime: number): string {
     let timesec = (readTime - lastreaded)
     //console.log("timesec: "+timesec+" readed : "+ readTime);
     try {
@@ -416,45 +365,96 @@ function ShopScreen(props: any): JSX.Element {
   return (<SafeAreaView style={styles.container}>
     <View>
       <Modal
+        avoidKeyboard={true}
         animationType="slide"
         transparent={true}
         visible={isModalVisible}
         onRequestClose={() => setisModalVisible(false)}
-      >
+      >     
         <View style={{
+          flex:1,
           height: '55%',
-          marginTop: 'auto',
+          marginTop: 0,
+          marginBottom:0,
           backgroundColor: COLORS.white,
-          borderTopLeftRadius: 20,
-          borderTopRightRadius: 20,
-
-        }}><Text style={{ margin: 10 }}>Okunan Barkod Sistemde Bulunamamıştır. Lüfen Ürün Bilgilerini giriniz.</Text>
-          <TextInput
+          borderBottomLeftRadius: 20,
+          borderBottomRightRadius: 20,
+        }}>
+                    
+          <Text style={{ margin: 10 }}>Okunan Barkod Sistemde Bulunamamıştır. Lüfen Ürün Bilgilerini giriniz.</Text>
+          <Input
+            onFocus={() => handleError(null, 'modalBarcode')}
+            iconName="qr-code-scanner"
+            label="Barcode"
+            placeholder="Barcode Numası giriniz"
+            //error={modalBarcode}
+            columnTitle={''}
+            password={undefined}
+            value={modalBarcode.toString()}
+            onChangeText={function (text: any): void {
+              console.log("onChangeText : " + text)
+              //handleOnchange(text, 'barcode')
+              setModalBarcode(text)
+            }}
+          />
+          {/*   <TextInput
             style={{ height: 40, backgroundColor: 'azure', margin: 2, fontSize: 18 }}
             placeholder="Barkod"
             value={modalBarcode}
             onChangeText={(text) => setModalBarcode(text)}
-          ></TextInput>
-          <TextInput
+          ></TextInput> */}
+          <Input
+            onFocus={() => handleError(null, 'modalUrunAdi')}
+            iconName="drive-file-rename-outline"
+            label="Ürün Adı"
+            placeholder="Ürün Adı giriniz"
+            //error={modalBarcode}
+            columnTitle={''}
+            password={undefined}
+            value={modalUrunAdi.toString()}
+            onChangeText={function (text: any): void {
+              console.log("onChangeText : " + text)
+              //handleOnchange(text, 'barcode')
+              setModalUrunAdi(text)
+            }}
+          />
+          {/*  <TextInput
             style={{ height: 40, backgroundColor: 'azure', margin: 2, fontSize: 18 }}
             placeholder="Ürün Adı"
             value={modalUrunAdi}
             onChangeText={(text) => setModalUrunAdi(text)}
-          ></TextInput>
-          <TextInput
-            style={{ height: 40, backgroundColor: 'azure', margin: 2, fontSize: 18 }}
-            placeholder="Fiyat"
-            value={modalPrice}
-            onChangeText={(text) => setModalPrice(text)}
-          ></TextInput>
-          <TextInput
-            style={{ height: 40, backgroundColor: 'azure', margin: 2, fontSize: 18 }}
-            placeholder="Stok"
-            value={modalStock}
-            onChangeText={(text) => setModalStock(text)}
-          ></TextInput>
+          ></TextInput> */}
+          <Input
+            onFocus={() => handleError(null, 'modalPrice')}
+            iconName="attach-money"
+            label="Ürün Fiyat"
+            placeholder="Fiyat giriniz"
+            //error={modalBarcode}
+            columnTitle={''}
+            password={undefined}
+            value={modalPrice.toString()}
+            onChangeText={function (text: any): void {
+              console.log("onChangeText : " + text)
+              //handleOnchange(text, 'barcode')
+              setModalPrice(text)
+            }}
+          />
+          <Input
+            onFocus={() => handleError(null, 'modalStock')}
+            iconName="storage"
+            label="Stok Adet"
+            placeholder="Fiyat giriniz"
+            //error={modalBarcode}
+            columnTitle={''}
+            password={undefined}
+            value={modalStock.toString()}
+            onChangeText={function (text: any): void {
+              console.log("onChangeText : " + text)
+              //handleOnchange(text, 'barcode')
+              setModalStock(text)
+            }}
+          />
           <Button title="Kaydet" onPress={AddProduct} ></Button>
-
         </View>
       </Modal>
     </View>
@@ -471,44 +471,45 @@ function ShopScreen(props: any): JSX.Element {
       >
       </RNCamera>
       <View>
-      <View style={{  
-          alignItems: 'center', 
-          alignSelf: 'center', 
+        <View style={{
+          alignItems: 'center',
+          alignSelf: 'center',
           justifyContent: 'center',
           backgroundColor: 'blue',
           width: width - 170,
           height: 30,
           borderRadius: 10,
-          margin: 10,}}>
-        <Text style={{
-            fontSize: 20, 
-            fontWeight: 'bold', 
-            color: COLORS.white, 
-            alignItems: 'center', 
-            alignSelf: 'center', 
+          margin: 10,
+        }}>
+          <Text style={{
+            fontSize: 20,
+            fontWeight: 'bold',
+            color: COLORS.white,
+            alignItems: 'center',
+            alignSelf: 'center',
             justifyContent: 'center',
-        }}>Toplam : {toplam}</Text>
+          }}>Toplam : {toplam}</Text>
         </View>
-        <View style={{  
-          alignItems: 'center', 
-          alignSelf: 'center', 
+        <View style={{
+          alignItems: 'center',
+          alignSelf: 'center',
           justifyContent: 'center',
           backgroundColor: 'blue',
           width: width - 170,
           height: 30,
           borderRadius: 10,
-          }}>
-        <Text style={{
-          fontSize: 20, 
-          fontWeight: 'bold', 
-          color: COLORS.white, 
-          alignItems: 'center', 
-          alignSelf: 'center', 
-          justifyContent: 'center',
-        
-        }}>Adet : {datas.length}</Text>
+        }}>
+          <Text style={{
+            fontSize: 20,
+            fontWeight: 'bold',
+            color: COLORS.white,
+            alignItems: 'center',
+            alignSelf: 'center',
+            justifyContent: 'center',
+
+          }}>Adet : {datas.length}</Text>
         </View>
-     
+
         <Dropdown label="Nakit" data={selectedData} onSelect={setSelected} />
         <TouchableOpacity style={styles.btnOrder} onPress={orderClick}>
           <Text style={{ fontSize: 20, fontWeight: 'bold', color: COLORS.white, alignItems: 'center', alignSelf: 'center', justifyContent: 'center' }}>SATIŞ</Text>
@@ -601,6 +602,18 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 32,
+  },
+  label: {
+    marginVertical: 5,
+    fontSize: 14,
+    color: COLORS.grey,
+  },
+  inputContainer: {
+    height: 45,
+    backgroundColor: COLORS.light,
+    flexDirection: 'row',
+    paddingHorizontal: 15,
+    borderWidth: 0.5,
   },
 });
 
