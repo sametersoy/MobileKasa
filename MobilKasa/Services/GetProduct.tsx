@@ -1,7 +1,7 @@
 import React from "react";
 import { InteractionManager } from "react-native/types";
 import { IProduct } from "../Models/IProduct";
-import {base_url,api_getProduct, api_addProduct, api_addPrice, api_paging, api_getProductId, api_getProductDetail, api_updateProduct} from "./ServisConfig"
+import {base_url,api_getProduct, api_addProduct, api_addPrice, api_paging, api_getProductId, api_getProductDetail, api_updateProduct, api_productSearch} from "./ServisConfig"
 
 
 
@@ -14,6 +14,18 @@ import {base_url,api_getProduct, api_addProduct, api_addPrice, api_paging, api_g
       return json;
     }).catch((error) => {
       console.log("GetPaging Service Error: " + error);
+    });
+    return data;
+  }
+
+  export function GetProductSearch(search: string): Promise<IProduct[]> {
+    var data = fetch(base_url+api_productSearch + search, {
+      method: "GET",
+      headers: { "Content-type": "application/json" }
+    }).then((response) => response.json()).then((json) => {
+      return json;
+    }).catch((error) => {
+      console.log("GetProductSearch Service Error: " + error);
     });
     return data;
   }

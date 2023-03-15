@@ -169,7 +169,7 @@ function ShopScreen(props: any): JSX.Element {
   const [barcode, setBarcode] = useState("");
   const [toplam, setToplam] = useState(0.0);
   const [datas, setDatas] = useState<IProduct[]>([])
-  const [isModalVisible, setisModalVisible] = useState(true)
+  const [isModalVisible, setisModalVisible] = useState(false)
 
   const [modalBarcode, setModalBarcode] = useState<string>("")
   const [modalUrunAdi, setModalUrunAdi] = useState<string>("")
@@ -365,7 +365,6 @@ function ShopScreen(props: any): JSX.Element {
   return (<SafeAreaView style={styles.container}>
     <View>
       <Modal
-        avoidKeyboard={true}
         animationType="slide"
         transparent={true}
         visible={isModalVisible}

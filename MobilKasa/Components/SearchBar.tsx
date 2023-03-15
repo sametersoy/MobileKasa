@@ -4,10 +4,10 @@ import { StyleSheet, TextInput, View, Keyboard, Button } from "react-native";
 import Icon from "react-native-vector-icons/MaterialIcons";
 
 interface Props {
-  clicked:any, searchPhrase:any, setSearchPhrase:any, setCLicked:any
+  clicked:any, searchPhrase:any, setSearchPhrase:any, setCLicked:any, onChangeText?:any,
 }
 
-const SearchBar: React.FC<Props> = ({clicked, searchPhrase, setSearchPhrase, setCLicked}) => {
+const SearchBar: React.FC<Props> = ({clicked, searchPhrase, setSearchPhrase, setCLicked,onChangeText}) => {
   console.log("click : "+clicked);
   
   return (

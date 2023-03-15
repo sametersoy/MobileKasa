@@ -14,6 +14,8 @@ export const api_updateProduct = '/Product/UpdateProducts';
 
 export const api_paging = '/Product/GetProducts_Paging?page_count=';
 
+export const api_productSearch = '/Product/GetProductsSearch?search=';
+
 
 export const api_addPrice = '/Price/AddPrices?products_id=';
 
