@@ -1,9 +1,22 @@
 import react, { useEffect } from 'react'
 import { Text, Button, View, SafeAreaView, StyleSheet, TouchableOpacity, Dimensions, Animated, } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import { useSelector, useDispatch } from 'react-redux'
+import { decrement, increment } from '../Redux/reducers/counterSlice'
+import { RootState } from '../Redux/Store';
+
 const width = Dimensions.get('window').width;
 const height = Dimensions.get('window').height;
+
+
+
 export function MainScreen(props: any): JSX.Element {
+    const count = useSelector((state: RootState) => state.counter.value)
+    const dispatch = useDispatch()
+    console.log(count)
+
+
+
     const shopAnim = react.useRef(new Animated.Value(0)).current; // Initial value for opacity: 0
     const shopAnimRotating = shopAnim.interpolate({
         inputRange: [0, 30],
@@ -41,42 +54,45 @@ export function MainScreen(props: any): JSX.Element {
             }}>
                 <View style={styles.content1}>
                     <TouchableOpacity
-                        onPress={() => props.navigation.navigate("Kasa")}>
+                        onPress={() => {
+                            props.navigation.navigate("Kasa")
+                            dispatch(increment())
+                        }}>
                         <Icon name="add-shopping-cart" size={100} color="white" />
                         <Text style={{ color: 'white', fontWeight: 'bold', fontSize: 28, alignSelf: 'center' }}>KASA</Text>
                     </TouchableOpacity>
                 </View>
             </Animated.View>
             <View style={styles.concontent}>
-            <Animated.View style={{
-                width: '50%',
-                height: height / 3,
-                transform: [
-                    { rotateY: shopAnimRotating },
-                ],
-            }}>
-                <View style={styles.content2}>
-                    <TouchableOpacity
-                        onPress={() => props.navigation.navigate("Stok")}>
-                        <Icon name="storage" size={100} color="white" />
-                        <Text style={{ color: 'white', fontWeight: 'bold', fontSize: 28, alignSelf: 'center' }}>STOK</Text>
-                    </TouchableOpacity>
-                </View>
+                <Animated.View style={{
+                    width: '50%',
+                    height: height / 3,
+                    transform: [
+                        { rotateY: shopAnimRotating },
+                    ],
+                }}>
+                    <View style={styles.content2}>
+                        <TouchableOpacity
+                            onPress={() => props.navigation.navigate("Stok")}>
+                            <Icon name="storage" size={100} color="white" />
+                            <Text style={{ color: 'white', fontWeight: 'bold', fontSize: 28, alignSelf: 'center' }}>STOK</Text>
+                        </TouchableOpacity>
+                    </View>
                 </Animated.View>
                 <Animated.View style={{
-                width: '50%',
-                height: height / 3,
-                transform: [
-                    { rotateY: shopAnimRotating },
-                ],
-            }}>
-                <View style={styles.content4}>
-                    <TouchableOpacity
-                        onPress={() => props.navigation.navigate("Order")}>
-                        <Icon name="border-color" size={100} color="white" />
-                        <Text style={{ color: 'white', fontWeight: 'bold', fontSize: 28, alignSelf: 'center' }}>SATIŞLAR</Text>
-                    </TouchableOpacity>
-                </View>
+                    width: '50%',
+                    height: height / 3,
+                    transform: [
+                        { rotateY: shopAnimRotating },
+                    ],
+                }}>
+                    <View style={styles.content4}>
+                        <TouchableOpacity
+                            onPress={() => props.navigation.navigate("Order")}>
+                            <Icon name="border-color" size={100} color="white" />
+                            <Text style={{ color: 'white', fontWeight: 'bold', fontSize: 28, alignSelf: 'center' }}>SATIŞLAR</Text>
+                        </TouchableOpacity>
+                    </View>
                 </Animated.View>
 
             </View>
@@ -87,13 +103,13 @@ export function MainScreen(props: any): JSX.Element {
                     { rotateY: shopAnimRotating },
                 ],
             }}>
-            <View style={styles.content3}>
-                <TouchableOpacity
-                    onPress={() => props.navigation.navigate("Setting")}>
-                    <Icon name="settings" size={100} color="white" />
-                    <Text style={{ color: 'white', fontWeight: 'bold', fontSize: 28, alignSelf: 'center' }}>AYARLAR</Text>
-                </TouchableOpacity>
-            </View>
+                <View style={styles.content3}>
+                    <TouchableOpacity
+                        onPress={() => props.navigation.navigate("Setting")}>
+                        <Icon name="settings" size={100} color="white" />
+                        <Text style={{ color: 'white', fontWeight: 'bold', fontSize: 28, alignSelf: 'center' }}>AYARLAR</Text>
+                    </TouchableOpacity>
+                </View>
             </Animated.View>
 
         </View>

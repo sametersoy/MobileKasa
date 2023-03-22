@@ -12,6 +12,8 @@ import { OrderDetail } from './Screens/OrderDetail';
 import {StockDetail} from './Screens/StockDetail';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import ProductEdit from './Screens/ProductEdit';
+import { store } from './Redux/Store'
+import { Provider } from 'react-redux'
 
 
 
@@ -46,6 +48,7 @@ const Stack = createNativeStackNavigator();
 function  App(): JSX.Element {
 
   return (
+    <Provider store={store}>
     <NavigationContainer>{/* Rest of your app code */}
     <Stack.Navigator>
         <Stack.Screen name="Main" component={MainScreen} options={{headerShown:false}} ></Stack.Screen>
@@ -58,7 +61,8 @@ function  App(): JSX.Element {
         <Stack.Screen name="StockDetail" component={StockDetail} options={{ title: 'Stok Detay' }} ></Stack.Screen>
         <Stack.Screen name="ProductEdit" component={ProductEdit} options={{ title: 'Ürün Güncelle' }} ></Stack.Screen>
       </Stack.Navigator>
-    </NavigationContainer>   
+    </NavigationContainer>  
+    </Provider> 
   );
 }
 export default App;

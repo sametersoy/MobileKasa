@@ -53,7 +53,7 @@ function StockScreen(props: any): JSX.Element {
             name="create-new-folder"
             size={25}
             color="black"
-            style={{  }}
+            style={{ marginLeft:20 }}
             onPress={() => {
               props.navigation.navigate("NewProduct");
             }}
@@ -181,14 +181,14 @@ function StockScreen(props: any): JSX.Element {
 
   return (
     <SafeAreaView>
-     {/*  {searchVisibility ?
-        <SearchBar searchPhrase={searchPhrase}
+      {/* searchVisibility ? */
+      /*   <SearchBar searchPhrase={searchPhrase}
           setSearchPhrase={setSearchPhrase}
           clicked={clicked}
           setCLicked={setClicked} 
-          //onChangeText={search(searchPhrase)}
-          />
-        : null} */}
+          onChangeText={(d:string) => search(d)}
+          /> */
+       /*  : null */}
       <FlatList
         data={datas}
         renderItem={({ item }) => (
