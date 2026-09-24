@@ -1,0 +1,85 @@
+services:
+  auth:
+    build:
+      context: ./Backend/Auth
+      dockerfile: Dockerfile
+    container_name: mobilkasa-auth
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      ASPNETCORE_URLS: http://+:8080
+    ports:
+      - "5001:8080"
+    networks:
+      - mobilkasa-net
+
+  webservis:
+    build:
+      context: ./Backend/WebServis
+      dockerfile: Dockerfile
+    container_name: mobilkasa-webservis
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      ASPNETCORE_URLS: http://+:8080
+    ports:
+      - "5002:8080"
+    networks:
+      - mobilkasa-net
+
+  mobileservis:
+    build:
+      context: ./Backend/MobileServis
+      dockerfile: Dockerfile
+    container_name: mobilkasa-mobileservis
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      ASPNETCORE_URLS: http://+:8080
+    ports:
+      - "5003:8080"
+    networks:
+      - mobilkasa-net
+
+  gateway:
+    build:
+      context: ./Backend/Gateway
+      dockerfile: Dockerfile
+    container_name: mobilkasa-gateway
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      ASPNETCORE_URLS: http://+:8080
+    ports:
+      - "5000:8080"
+    depends_on:
+      - auth
+      - webservis
+      - mobileservis
+    networks:
+      - mobilkasa-net
+
+  web:
+    build:
+      context: ./Web/web-app
+      dockerfile: Dockerfile
+    container_name: mobilkasa-web
+    restart: unless-stopped
+    ports:
+      - "443:443"
+      - "80:80"
+      - "3000:80"
+    depends_on:
+      - gateway
+    networks:
+      - mobilkasa-net
+
+
+networks:
+  mobilkasa-net:
+    name: mobilkasa-net
+    driver: bridge

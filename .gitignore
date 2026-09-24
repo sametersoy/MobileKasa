@@ -1,0 +1,19 @@
+.DS_Store
+.env
+.env.*
+!.env.example
+
+# .NET
+**/bin/
+**/obj/
+*.user
+
+# Node / RN (alt projelerin kendi .gitignore'ları da geçerli)
+node_modules/
+dist/
+
+# İmzalama anahtarları
+*.keystore
+!debug.keystore
+*.jks
+*.p12

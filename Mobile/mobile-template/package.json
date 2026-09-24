@@ -1,0 +1,30 @@
+{
+  "name": "react-mazi",
+  "version": "1.0.0",
+  "description": "This is Mazi project",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "npm test",
+    "prepare": "husky install"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@bitbucket.org/passionui/react-mazi.git"
+  },
+  "author": "thaivannguyen.it@gmail.com",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://bitbucket.org/passionui/react-mazi/issues"
+  },
+  "homepage": "https://bitbucket.org/passionui/react-mazi#readme",
+  "devDependencies": {
+    "husky": "^7.0.0",
+    "lint-staged": "^13.0.3"
+  },
+  "lint-staged": {
+    "source/**/*.js": ["npx eslint -c source/eslint.config.js"],
+    "source-expo/**/*.js": ["npx eslint -c source-expo/.eslintrc.js"]
+  }
+}

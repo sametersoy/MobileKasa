@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="Auth/Auth.csproj" />
+  <Project Path="Gateway/Gateway.csproj" />
+  <Project Path="MobileServis/MobileServis.csproj" />
+  <Project Path="WebServis/WebServis.csproj" />
+</Solution>

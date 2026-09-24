@@ -1,0 +1,245 @@
+# MobileKasa — Rancher/RKE2 manifestleri (namespace: mobilkasa)
+# Uygula:  kubectl apply -f mobilkasa.yaml
+# İmajlar registry'den değil, deploy.sh ile node'lara doğrudan yüklenir. Secret mobilkasa-secrets bu dosyada YOK — bkz. deploy/k8s/README.md
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: mobilkasa
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: auth
+  namespace: mobilkasa
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: auth
+  template:
+    metadata:
+      labels:
+        app: auth
+    spec:
+      containers:
+        - name: auth
+          image: docker.io/mobilkasa/auth:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+          env:
+            - name: ASPNETCORE_ENVIRONMENT
+              value: Production
+            - name: ASPNETCORE_URLS
+              value: http://+:8080
+          envFrom:
+            - secretRef:
+                name: mobilkasa-secrets
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: auth
+  namespace: mobilkasa
+spec:
+  selector:
+    app: auth
+  ports:
+    - port: 8080
+      targetPort: 8080
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: webservis
+  namespace: mobilkasa
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: webservis
+  template:
+    metadata:
+      labels:
+        app: webservis
+    spec:
+      containers:
+        - name: webservis
+          image: docker.io/mobilkasa/webservis:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+          env:
+            - name: ASPNETCORE_ENVIRONMENT
+              value: Production
+            - name: ASPNETCORE_URLS
+              value: http://+:8080
+          envFrom:
+            - secretRef:
+                name: mobilkasa-secrets
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: webservis
+  namespace: mobilkasa
+spec:
+  selector:
+    app: webservis
+  ports:
+    - port: 8080
+      targetPort: 8080
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mobileservis
+  namespace: mobilkasa
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mobileservis
+  template:
+    metadata:
+      labels:
+        app: mobileservis
+    spec:
+      containers:
+        - name: mobileservis
+          image: docker.io/mobilkasa/mobileservis:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+          env:
+            - name: ASPNETCORE_ENVIRONMENT
+              value: Production
+            - name: ASPNETCORE_URLS
+              value: http://+:8080
+          envFrom:
+            - secretRef:
+                name: mobilkasa-secrets
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mobileservis
+  namespace: mobilkasa
+spec:
+  selector:
+    app: mobileservis
+  ports:
+    - port: 8080
+      targetPort: 8080
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gateway
+  namespace: mobilkasa
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gateway
+  template:
+    metadata:
+      labels:
+        app: gateway
+    spec:
+      containers:
+        - name: gateway
+          image: docker.io/mobilkasa/gateway:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+          env:
+            - name: ASPNETCORE_ENVIRONMENT
+              value: Production
+            - name: ASPNETCORE_URLS
+              value: http://+:8080
+          envFrom:
+            - secretRef:
+                name: mobilkasa-secrets
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: gateway
+  namespace: mobilkasa
+spec:
+  selector:
+    app: gateway
+  ports:
+    - port: 8080
+      targetPort: 8080
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web
+  namespace: mobilkasa
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: web
+  template:
+    metadata:
+      labels:
+        app: web
+    spec:
+      containers:
+        - name: web
+          image: docker.io/mobilkasa/web:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: web
+  namespace: mobilkasa
+spec:
+  selector:
+    app: web
+  ports:
+    - port: 80
+      targetPort: 80
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: mobilkasa
+  namespace: mobilkasa
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+spec:
+  ingressClassName: traefik
+  tls:
+    - hosts:
+        - mobilkasa.sametersoy.com
+        - gw-mobilkasa.sametersoy.com
+      secretName: mobilkasa-tls
+  rules:
+    - host: mobilkasa.sametersoy.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: web
+                port:
+                  number: 80
+    - host: gw-mobilkasa.sametersoy.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: gateway
+                port:
+                  number: 8080

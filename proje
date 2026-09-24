@@ -1,0 +1,72 @@
+yonetimim.com alan adında apartman ve site yönetimi için global bir proje yapacağız.
+Proje micro servis olacak.
+Web
+ Web\web-template 
+    react
+    vite
+Mobile
+ Mobile\mobile-template 
+    react-native
+Backend
+ Gateway
+    .net
+    jwt
+    swagger
+    Ocelot 
+ Aut
+    .net
+    jwt
+    swagger
+ WebServis
+    .net
+    jwt
+    swagger
+ MobileServis
+    .net
+    jwt
+    swagger
+GlobalAssets
+    *
+
+Veri tabanı olarak postgres kullanılacak.
+Projelerin hepsi docker olarak çalışacak
+Gateway adresi gw.yonetimim.com olacak 
+
+Bir tane ana sayfa yapacağız kullacılar için demo ve kayıt sayfaları butonu olacak Backend hariç web ve mobile için klasörlerin altındaki temalar kullanılacak.
+Şimdilik bu windows bilgisalarımda geliştireceğiz ayrıca ios için bir m3 macbook prom var bazen onu kullanacağız.
+
+projeyi insalık için uzun süre ücretsiz yayınlayacağız ve ziyaretcilere bunun sürekli bildireceğiz.
+Her kullanıcı birden fazla apartman site yönetimi yapabilecek
+Başlıca özelliklerimiz 
+gelir gider takipleri
+her daire için elektrik doğalgaz su gibi sayaç ekleme ve takibi ve ödemeleri - ödeme servisleri sonradan yazılacak
+her aparman site örneğin bahçe biçme, duvar boyama, elektrik tesisat işleri gibi işler için site üzerinden firmaların görüp teklif verebileceği ihale yayınlaya bilecek
+projelerin her biri sadece docker olsun çünkü bunları daha sonra racnher üzerinde ayrı deploymentlar üzerinden yöneteceğim ve her modülde güncelleme yaptığımda tüm deployment build olmak zorunda kalmayacak
+aidat ve hesaplama kurallarının yapılacağı bir ayar sayfası olacak
+Oy/anket modülü ekleyeceğiz.
+Bildirim sistemi olacak
+Dosya/belge yönetimi olacak
+site/aparman yöneticileri kullanıcı kaydı yapabilecek bu kullanıcılar sisteme giriş yaptığında kendi daire/konutlarının detaylarını görebilecek
+gelir gider eklerken daire ve daire sakini seçebilmem lazım, daire saikini seçili değilse boş kayıt edilebilsin. Ayrıca daire seçerken daire adlarının yanına belirtici şekilde bina adının gelmesi lazım ve tarih seçili değilse o günün tarihi ile kayıt yapılsın.
+bir daire sakini birden fazla daire ile ilişkilendirilebilir 
+kvkk kapsamında mabil ve web servisten dönün telefon ve mail adresleri maskelenecek.
+
+
+mobile uygulamayı çalıştırırken bu kodları kullanabiliriz (debug - emülatör)
+$env:JAVA_HOME = "C:\Program Files\Microsoft\jdk-17.0.19.10-hotspot"
+$env:ANDROID_HOME = "$env:LOCALAPPDATA\Android\Sdk"
+cd c:\yonetimim\Mobile\mobile-template\source\android
+.\gradlew.bat app:installDebug -PreactNativeDevServerPort=8081 --project-cache-dir "C:\gradle-cache-rn"
+
+mobile uygulamayı Google Play'e yüklemek için AAB derlemek (release)
+$env:JAVA_HOME = "C:\Program Files\Microsoft\jdk-17.0.19.10-hotspot"
+$env:ANDROID_HOME = "$env:LOCALAPPDATA\Android\Sdk"
+cd c:\yonetimim\Mobile\mobile-template\source\android
+.\gradlew.bat bundleRelease --project-cache-dir "C:\gradle-cache-rn"
+# Çıktı: app\build\outputs\bundle\release\app-release.aab
+# build.gradle'da versionCode ve versionName'i yüklemeden önce artır
+
+Projeyi Commit ve pushla
+Bu konuşmada yaptıklarımızı CLAUDE.md dosyasına özetle
+
+
