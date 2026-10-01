@@ -66,7 +66,9 @@
 - Yeni `app/` klasörü eklenirse `babel.config.js`'teki alias listesine `@/<klasör>` eklenmeli.
 
 ## Yapılacaklar
-- [ ] Eski yonetimim ekran/tablolarının (Buildings, Dues, Polls…) kaldırılması
+- [x] Eski yonetimim backend kodu ve tabloları kaldırıldı (2026-10-01, migration'lar `RemoveYonetimimTables` +
+  `RemoveResidentUnits`; yedek `_legacy/db-backup/`, git'te yok). Kalan: `Feedbacks`, `DeviceTokens`, `Users` + perakende.
+- [ ] Mobil/web'deki eski yonetimim ekranlarının (menüden erişilemiyor) temizlenmesi
 - [ ] Satış iadesi/iptali, fiş yazdırma, raporlar
 
 ---
