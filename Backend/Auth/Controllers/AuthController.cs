@@ -73,6 +73,13 @@ public class AuthController(IAuthService authService, IConfiguration config) : C
     }
 
     /// <summary>
+    /// Web istemcisinin Sign in with Apple JS'i başlatması için gereken (gizli olmayan) Services ID.
+    /// </summary>
+    [HttpGet("apple/config")]
+    public IActionResult AppleConfig() =>
+        Ok(new AppleConfigDto(config["Apple:WebServicesId"]));
+
+    /// <summary>
     /// İstemcilerin Google Sign-In'i başlatması için gereken (gizli olmayan) client ID'ler.
     /// </summary>
     [HttpGet("google/config")]

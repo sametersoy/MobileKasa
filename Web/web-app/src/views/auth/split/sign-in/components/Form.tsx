@@ -5,9 +5,10 @@ import FormCheckInput from 'react-bootstrap/esm/FormCheckInput'
 import FormCheckLabel from 'react-bootstrap/esm/FormCheckLabel'
 import { useAuth } from '@/hooks/useAuth'
 import GoogleSignInButton from '@/components/GoogleSignInButton'
+import AppleSignInButton from '@/components/AppleSignInButton'
 
 const LoginForm = () => {
-  const { login, googleLogin, loading, error } = useAuth()
+  const { login, googleLogin, appleLogin, loading, error } = useAuth()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
 
@@ -58,6 +59,7 @@ const LoginForm = () => {
         </Button>
       </div>
       <GoogleSignInButton text="signin_with" onCredential={googleLogin} />
+      <AppleSignInButton onCredential={appleLogin} />
       <p className="text-muted text-center mt-3 mb-0">
         Hesabınız yok mu?&nbsp;
         <Link to="/auth/split/sign-up" className="text-decoration-underline link-offset-3 fw-semibold">

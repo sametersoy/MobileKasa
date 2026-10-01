@@ -2,9 +2,10 @@ import { useState } from 'react'
 import { Button, Form, FormControl } from 'react-bootstrap'
 import { useAuth } from '@/hooks/useAuth'
 import GoogleSignInButton from '@/components/GoogleSignInButton'
+import AppleSignInButton from '@/components/AppleSignInButton'
 
 const RegisterForm = () => {
-  const { register, googleLogin, loading, error } = useAuth()
+  const { register, googleLogin, appleLogin, loading, error } = useAuth()
   const [fullName, setFullName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -76,6 +77,7 @@ const RegisterForm = () => {
         </Button>
       </div>
       <GoogleSignInButton text="signup_with" onCredential={googleLogin} />
+      <AppleSignInButton onCredential={appleLogin} />
     </Form>
   )
 }

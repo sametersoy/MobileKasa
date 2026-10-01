@@ -81,6 +81,20 @@ export const useAuth = () => {
     }
   }
 
+  const appleLogin = async (identityToken: string, fullName: string | null) => {
+    try {
+      setLoading(true)
+      setError(null)
+      const { data } = await axios.post('/api/auth/auth/apple', { identityToken, fullName })
+      completeLogin(data)
+    } catch (err: any) {
+      const message = err.response?.data?.message ?? err.response?.data ?? 'Apple ile giriş başarısız'
+      setError(typeof message === 'string' ? message : 'Apple ile giriş başarısız')
+    } finally {
+      setLoading(false)
+    }
+  }
+
   const login = async (email: string, password: string) => {
     try {
       setLoading(true)
@@ -105,6 +119,7 @@ export const useAuth = () => {
   return {
     login,
     googleLogin,
+    appleLogin,
     register,
     logout,
     isAuthenticated,

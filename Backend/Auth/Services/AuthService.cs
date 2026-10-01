@@ -85,7 +85,8 @@ public class AuthService(AppDbContext db, IJwtService jwtService, IConfiguration
     /// </summary>
     public async Task<AuthResponseDto> AppleLoginAsync(AppleLoginDto dto)
     {
-        var audiences = (config["Apple:BundleIds"] ?? "")
+        // iOS uygulaması bundle ID'yle, web ise Services ID'yle imzalanmış token gönderir
+        var audiences = $"{config["Apple:BundleIds"]},{config["Apple:WebServicesId"]}"
             .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
         if (audiences.Length == 0)
             throw new InvalidOperationException("Apple ile giriş yapılandırılmamış.");
