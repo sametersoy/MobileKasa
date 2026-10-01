@@ -27,4 +27,17 @@ export const googleAuthentication = (idToken, callback) => async (dispatch) => {
   }
 };
 
+export const appleAuthentication = (identityToken, fullName, callback) => async (dispatch) => {
+  dispatch({ type: actionTypes.LOGIN_START });
+  try {
+    const data = await authApi.apple(identityToken, fullName);
+    dispatch({ type: actionTypes.LOGIN_SUCCESS, data });
+    if (typeof callback === 'function') callback({ success: true });
+  } catch (error) {
+    console.warn('[AUTH] apple login error:', error?.message);
+    dispatch({ type: actionTypes.LOGIN_ERROR });
+    if (typeof callback === 'function') callback({ success: false, error: error?.message ?? 'Bağlantı hatası' });
+  }
+};
+
 export const logout = () => ({ type: actionTypes.LOGOUT });

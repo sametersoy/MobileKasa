@@ -3,7 +3,7 @@ import { View, KeyboardAvoidingView, Platform, TouchableOpacity } from 'react-na
 import { useDispatch } from 'react-redux';
 import { BaseColor, BaseStyle, useTheme } from '@/config';
 import { AuthActions } from '@/actions';
-import { Button, GoogleSignInButton, SafeAreaView, Text, TextInput } from '@/components';
+import { AppleSignInButton, Button, GoogleSignInButton, SafeAreaView, Text, TextInput } from '@/components';
 import styles from './styles';
 
 const { authentication } = AuthActions;
@@ -126,6 +126,13 @@ const SignIn = ({ navigation }) => {
             onResult={(response) => {
               if (response.success) navigation.replace('CryptoMenu');
               else setError(response.error ?? 'Google ile giriş yapılamadı.');
+            }}
+          />
+
+          <AppleSignInButton
+            onResult={(response) => {
+              if (response.success) navigation.replace('CryptoMenu');
+              else setError(response.error ?? 'Apple ile giriş yapılamadı.');
             }}
           />
 

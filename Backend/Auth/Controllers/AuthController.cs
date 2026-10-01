@@ -53,6 +53,26 @@ public class AuthController(IAuthService authService, IConfiguration config) : C
     }
 
     /// <summary>
+    /// Sign in with Apple ile giriş / kayıt. İstemci, Apple'dan aldığı identity token'ı gönderir.
+    /// </summary>
+    [HttpPost("apple")]
+    public async Task<IActionResult> Apple(AppleLoginDto dto)
+    {
+        try
+        {
+            return Ok(await authService.AppleLoginAsync(dto));
+        }
+        catch (UnauthorizedAccessException ex)
+        {
+            return Unauthorized(new { message = ex.Message });
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
+    }
+
+    /// <summary>
     /// İstemcilerin Google Sign-In'i başlatması için gereken (gizli olmayan) client ID'ler.
     /// </summary>
     [HttpGet("google/config")]

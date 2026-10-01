@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { View, KeyboardAvoidingView, Platform, ScrollView, Alert } from 'react-native';
 import { BaseColor, BaseStyle, useTheme } from '@/config';
 import { authApi } from '@/api';
-import { Button, GoogleSignInButton, Header, Icon, SafeAreaView, Text, TextInput } from '@/components';
+import { AppleSignInButton, Button, GoogleSignInButton, Header, Icon, SafeAreaView, Text, TextInput } from '@/components';
 import styles from './styles';
 
 const SignUp = ({ navigation }) => {
@@ -175,6 +175,14 @@ const SignUp = ({ navigation }) => {
             onResult={(response) => {
               if (response.success) navigation.replace('CryptoMenu');
               else setError(response.error ?? 'Google ile kayıt yapılamadı.');
+            }}
+          />
+
+          <AppleSignInButton
+            style={{ alignSelf: 'stretch' }}
+            onResult={(response) => {
+              if (response.success) navigation.replace('CryptoMenu');
+              else setError(response.error ?? 'Apple ile kayıt yapılamadı.');
             }}
           />
         </ScrollView>
