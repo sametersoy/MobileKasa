@@ -6,25 +6,8 @@ namespace WebServis.Data;
 
 public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(options)
 {
-    public DbSet<Building> Buildings => Set<Building>();
-    public DbSet<BuildingMember> BuildingMembers => Set<BuildingMember>();
-    public DbSet<Unit> Units => Set<Unit>();
-    public DbSet<FinancialTransaction> FinancialTransactions => Set<FinancialTransaction>();
-    public DbSet<Meter> Meters => Set<Meter>();
-    public DbSet<MeterReading> MeterReadings => Set<MeterReading>();
-    public DbSet<DuesRule> DuesRules => Set<DuesRule>();
-    public DbSet<Dues> Dues => Set<Dues>();
-    public DbSet<Tender> Tenders => Set<Tender>();
-    public DbSet<TenderOffer> TenderOffers => Set<TenderOffer>();
-    public DbSet<Poll> Polls => Set<Poll>();
-    public DbSet<PollOption> PollOptions => Set<PollOption>();
-    public DbSet<PollVote> PollVotes => Set<PollVote>();
-    public DbSet<Notification> Notifications => Set<Notification>();
-    public DbSet<Document> Documents => Set<Document>();
     public DbSet<ResidentUser> ResidentUsers => Set<ResidentUser>();
     public DbSet<Feedback> Feedbacks => Set<Feedback>();
-
-    public DbSet<ResidentUnitLink> ResidentUnitLinks => Set<ResidentUnitLink>();
 
     public DbSet<Store> Stores => Set<Store>();
     public DbSet<StoreMember> StoreMembers => Set<StoreMember>();
@@ -41,48 +24,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
 
     protected override void OnModelCreating(ModelBuilder m)
     {
-        m.Entity<ResidentUser>()
-            .ToTable("Users", t => t.ExcludeFromMigrations())
-            .HasMany(u => u.ResidentUnits)
-            .WithOne()
-            .HasForeignKey(ru => ru.UserId);
-
-        m.Entity<ResidentUnitLink>()
-            .ToTable("ResidentUnits", t => t.ExcludeFromMigrations())
-            .HasKey(x => new { x.UserId, x.UnitId });
-
-        m.Entity<BuildingMember>()
-            .HasIndex(x => new { x.BuildingId, x.UserId }).IsUnique();
-
-        m.Entity<PollVote>()
-            .HasIndex(x => new { x.PollId, x.UserId }).IsUnique();
-
-        m.Entity<FinancialTransaction>()
-            .Property(x => x.Amount).HasPrecision(18, 2);
-
-        m.Entity<Meter>()
-            .HasOne(x => x.Unit)
-            .WithMany(x => x.Meters)
-            .HasForeignKey(x => x.UnitId)
-            .OnDelete(DeleteBehavior.Cascade);
-
-        m.Entity<MeterReading>()
-            .Property(x => x.Amount).HasPrecision(18, 2);
-
-        m.Entity<DuesRule>()
-            .Property(x => x.Amount).HasPrecision(18, 2);
-
-        m.Entity<Dues>()
-            .Property(x => x.Amount).HasPrecision(18, 2);
-
-        m.Entity<TenderOffer>()
-            .Property(x => x.Amount).HasPrecision(18, 2);
-
-        m.Entity<Document>()
-            .HasOne(x => x.Unit)
-            .WithMany(x => x.Documents)
-            .HasForeignKey(x => x.UnitId)
-            .OnDelete(DeleteBehavior.SetNull);
+        m.Entity<ResidentUser>().ToTable("Users", t => t.ExcludeFromMigrations());
 
         m.Entity<StoreMember>()
             .HasIndex(x => new { x.StoreId, x.UserId }).IsUnique();

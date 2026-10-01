@@ -15,6 +15,4 @@ public class User
 
     // Sakin kullanıcıları için — farklı serviste yaşayan referanslar (FK değil)
     public Guid? BuildingId { get; set; }
-
-    public ICollection<ResidentUnit> ResidentUnits { get; set; } = [];
 }

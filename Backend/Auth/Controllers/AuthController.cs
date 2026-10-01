@@ -71,22 +71,4 @@ public class AuthController(IAuthService authService, IConfiguration config) : C
         if (!deleted) return NotFound();
         return NoContent();
     }
-
-    /// <summary>
-    /// Yönetici, kendi binasındaki bir daireye sakin kaydeder.
-    /// </summary>
-    [HttpPost("register-sakin")]
-    [Authorize(Roles = "yonetici,admin")]
-    public async Task<IActionResult> RegisterSakin(RegisterSakinDto dto)
-    {
-        try
-        {
-            var result = await authService.RegisterSakinAsync(dto);
-            return Created(string.Empty, result);
-        }
-        catch (InvalidOperationException ex)
-        {
-            return BadRequest(new { message = ex.Message });
-        }
-    }
 }

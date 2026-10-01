@@ -11,12 +11,4 @@ public class ResidentUser
     public Guid? BuildingId { get; set; }
     public bool IsActive { get; set; }
     public DateTime CreatedAt { get; set; }
-    public ICollection<ResidentUnitLink> ResidentUnits { get; set; } = [];
-}
-
-// Auth servisinin "ResidentUnits" tablosunu read-only okumak için — migration'a dahil edilmez
-public class ResidentUnitLink
-{
-    public Guid UserId { get; set; }
-    public Guid UnitId { get; set; }
 }
