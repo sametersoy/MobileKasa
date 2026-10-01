@@ -4,6 +4,7 @@ import MainLayout from '@/layouts/MainLayout'
 
 export const routes: RouteObject[] = [
   { path: '', Component: lazy(() => import('@/views/auth/split/sign-in')) },
+  { path: '/gizlilik-politikasi', Component: lazy(() => import('@/views/legal/privacy-policy')) },
   {
     element: <MainLayout />,
     children: [

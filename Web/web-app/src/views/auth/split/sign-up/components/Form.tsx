@@ -1,9 +1,10 @@
 import { useState } from 'react'
 import { Button, Form, FormControl } from 'react-bootstrap'
 import { useAuth } from '@/hooks/useAuth'
+import GoogleSignInButton from '@/components/GoogleSignInButton'
 
 const RegisterForm = () => {
-  const { register, loading, error } = useAuth()
+  const { register, googleLogin, loading, error } = useAuth()
   const [fullName, setFullName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -74,6 +75,7 @@ const RegisterForm = () => {
           {loading ? 'Kaydediliyor...' : 'Hesap Oluştur'}
         </Button>
       </div>
+      <GoogleSignInButton text="signup_with" onCredential={googleLogin} />
     </Form>
   )
 }

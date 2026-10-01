@@ -4,9 +4,10 @@ import { Button, Form, FormCheck } from 'react-bootstrap'
 import FormCheckInput from 'react-bootstrap/esm/FormCheckInput'
 import FormCheckLabel from 'react-bootstrap/esm/FormCheckLabel'
 import { useAuth } from '@/hooks/useAuth'
+import GoogleSignInButton from '@/components/GoogleSignInButton'
 
 const LoginForm = () => {
-  const { login, loading, error } = useAuth()
+  const { login, googleLogin, loading, error } = useAuth()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
 
@@ -56,6 +57,7 @@ const LoginForm = () => {
           {loading ? 'Giriş yapılıyor...' : 'Giriş Yap'}
         </Button>
       </div>
+      <GoogleSignInButton text="signin_with" onCredential={googleLogin} />
       <p className="text-muted text-center mt-3 mb-0">
         Hesabınız yok mu?&nbsp;
         <Link to="/auth/split/sign-up" className="text-decoration-underline link-offset-3 fw-semibold">

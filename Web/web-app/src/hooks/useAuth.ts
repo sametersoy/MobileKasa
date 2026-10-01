@@ -53,23 +53,41 @@ export const useAuth = () => {
     }
   }
 
+  const completeLogin = (data: { token: string; fullName?: string }) => {
+    setToken(data.token)
+
+    // fullName'i ayrıca sakla — JWT'deki claim mapping'e güvenmeden
+    if (data.fullName) setStoredFullName(data.fullName)
+
+    const payload = parseJwt(data.token)
+    if (payload.role === 'sakin') {
+      navigate('/sakin/panelim', { replace: true })
+    } else {
+      navigate('/panel', { replace: true })
+    }
+  }
+
+  const googleLogin = async (idToken: string) => {
+    try {
+      setLoading(true)
+      setError(null)
+      const { data } = await axios.post('/api/auth/auth/google', { idToken })
+      completeLogin(data)
+    } catch (err: any) {
+      const message = err.response?.data?.message ?? err.response?.data ?? 'Google ile giriş başarısız'
+      setError(typeof message === 'string' ? message : 'Google ile giriş başarısız')
+    } finally {
+      setLoading(false)
+    }
+  }
+
   const login = async (email: string, password: string) => {
     try {
       setLoading(true)
       setError(null)
 
       const { data } = await axios.post('/api/auth/auth/login', { email, password })
-      setToken(data.token)
-
-      // fullName'i ayrıca sakla — JWT'deki claim mapping'e güvenmeden
-      if (data.fullName) setStoredFullName(data.fullName)
-
-      const payload = parseJwt(data.token)
-      if (payload.role === 'sakin') {
-        navigate('/sakin/panelim', { replace: true })
-      } else {
-        navigate('/panel', { replace: true })
-      }
+      completeLogin(data)
     } catch (err: any) {
       const message = err.response?.data?.message ?? err.response?.data ?? 'Giriş başarısız'
       setError(typeof message === 'string' ? message : 'Giriş başarısız')
@@ -86,6 +104,7 @@ export const useAuth = () => {
 
   return {
     login,
+    googleLogin,
     register,
     logout,
     isAuthenticated,

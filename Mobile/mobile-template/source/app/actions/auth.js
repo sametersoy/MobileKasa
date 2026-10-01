@@ -14,4 +14,17 @@ export const authentication = (email, password, callback) => async (dispatch) =>
   }
 };
 
+export const googleAuthentication = (idToken, callback) => async (dispatch) => {
+  dispatch({ type: actionTypes.LOGIN_START });
+  try {
+    const data = await authApi.google(idToken);
+    dispatch({ type: actionTypes.LOGIN_SUCCESS, data });
+    if (typeof callback === 'function') callback({ success: true });
+  } catch (error) {
+    console.warn('[AUTH] google login error:', error?.message);
+    dispatch({ type: actionTypes.LOGIN_ERROR });
+    if (typeof callback === 'function') callback({ success: false, error: error?.message ?? 'Bağlantı hatası' });
+  }
+};
+
 export const logout = () => ({ type: actionTypes.LOGOUT });

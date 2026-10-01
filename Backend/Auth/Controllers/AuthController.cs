@@ -8,7 +8,7 @@ namespace Auth.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class AuthController(IAuthService authService) : ControllerBase
+public class AuthController(IAuthService authService, IConfiguration config) : ControllerBase
 {
     [HttpPost("login")]
     public async Task<IActionResult> Login(LoginDto dto)
@@ -31,6 +31,33 @@ public class AuthController(IAuthService authService) : ControllerBase
             return BadRequest(new { message = ex.Message });
         }
     }
+
+    /// <summary>
+    /// Google ile giriş / kayıt. İstemci, Google'dan aldığı ID token'ı gönderir.
+    /// </summary>
+    [HttpPost("google")]
+    public async Task<IActionResult> Google(GoogleLoginDto dto)
+    {
+        try
+        {
+            return Ok(await authService.GoogleLoginAsync(dto));
+        }
+        catch (UnauthorizedAccessException ex)
+        {
+            return Unauthorized(new { message = ex.Message });
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
+    }
+
+    /// <summary>
+    /// İstemcilerin Google Sign-In'i başlatması için gereken (gizli olmayan) client ID'ler.
+    /// </summary>
+    [HttpGet("google/config")]
+    public IActionResult GoogleConfig() =>
+        Ok(new GoogleConfigDto(config["Google:WebClientId"], config["Google:IosClientId"]));
 
     [HttpDelete("account")]
     [Authorize]

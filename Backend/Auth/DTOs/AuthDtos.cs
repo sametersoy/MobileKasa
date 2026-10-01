@@ -1,6 +1,8 @@
 namespace Auth.DTOs;
 
 public record LoginDto(string Email, string Password);
+public record GoogleLoginDto(string IdToken);
+public record GoogleConfigDto(string? WebClientId, string? IosClientId);
 public record RegisterDto(string Email, string Password, string FullName);
 public record RegisterSakinDto(string Email, string Password, string FullName, Guid BuildingId, Guid UnitId, string? Phone = null);
 public record AuthResponseDto(string Token, string Email, string FullName, string Role, Guid? BuildingId);

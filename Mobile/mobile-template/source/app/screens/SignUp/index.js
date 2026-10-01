@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { View, KeyboardAvoidingView, Platform, ScrollView, Alert } from 'react-native';
 import { BaseColor, BaseStyle, useTheme } from '@/config';
 import { authApi } from '@/api';
-import { Button, Header, Icon, SafeAreaView, Text, TextInput } from '@/components';
+import { Button, GoogleSignInButton, Header, Icon, SafeAreaView, Text, TextInput } from '@/components';
 import styles from './styles';
 
 const SignUp = ({ navigation }) => {
@@ -169,6 +169,14 @@ const SignUp = ({ navigation }) => {
           <Button full loading={loading} style={{ marginTop: 24 }} onPress={onRegister}>
             Hesap Oluştur
           </Button>
+
+          <GoogleSignInButton
+            style={{ alignSelf: 'stretch' }}
+            onResult={(response) => {
+              if (response.success) navigation.replace('CryptoMenu');
+              else setError(response.error ?? 'Google ile kayıt yapılamadı.');
+            }}
+          />
         </ScrollView>
       </KeyboardAvoidingView>
     </SafeAreaView>

@@ -56,6 +56,12 @@ export const authApi = {
       method: 'POST',
       body: JSON.stringify({ email, password }),
     }),
+  google: (idToken) =>
+    request('/api/auth/auth/google', {
+      method: 'POST',
+      body: JSON.stringify({ idToken }),
+    }),
+  googleConfig: () => request('/api/auth/auth/google/config'),
   register: (fullName, email, password) =>
     request('/api/auth/auth/register', {
       method: 'POST',
